@@ -2,6 +2,12 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-*{
+
+* {
     font-family: "Poppins", sans-serif;
+}
+
+.active {
+    background-color: #14C2ED;
+    color: #fff;
 }
