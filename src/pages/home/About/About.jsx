@@ -2,20 +2,24 @@ import { FaBoxes, FaUsersCog, FaShieldAlt, FaChartLine } from "react-icons/fa";
 
 const About = () => {
   return (
-    <section className="bg-base-100 py-16 px-4 md:px-8 lg:px-16">
-      <div>
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-base-content">
-            Why Choose <span className="text-primary">AssetVerse</span>?
+    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-16  rounded-lg shadow-sm shadow-neutral bg-base-100">
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-base-content">
+            Why Choose <span className="text-primary">AssetVerse</span>
           </h2>
-          <p className="mt-4 text-base-content/70">
-            AssetVerse is a modern asset management platform designed to help
-            organizations track, manage, and optimize company resources with
-            confidence and efficiency.
+          <p className="mt-4 text-base-content/70 text-sm sm:text-base">
+            AssetVerse is a modern asset management platform built to help
+            organizations track, assign, and optimize company resources with
+            clarity, security, and operational efficiency.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="card bg-base-200 shadow-sm">
+
+        {/* Feature Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {/* Card 1 */}
+          <div className="card bg-base-200 shadow-xs shadow-neutral h-full transition-all duration-300 hover:shadow-md">
             <div className="card-body items-center text-center">
               <FaBoxes className="text-4xl text-primary mb-4" />
               <h3 className="text-lg font-semibold">
@@ -27,7 +31,9 @@ const About = () => {
               </p>
             </div>
           </div>
-          <div className="card bg-base-200 shadow-sm">
+
+          {/* Card 2 */}
+          <div className="card bg-base-200 shadow-xs shadow-neutral h-full transition-all duration-300 hover:shadow-md">
             <div className="card-body items-center text-center">
               <FaUsersCog className="text-4xl text-primary mb-4" />
               <h3 className="text-lg font-semibold">
@@ -39,7 +45,9 @@ const About = () => {
               </p>
             </div>
           </div>
-          <div className="card bg-base-200 shadow-sm">
+
+          {/* Card 3 */}
+          <div className="card bg-base-200 shadow-xs shadow-neutral h-full transition-all duration-300 hover:shadow-md">
             <div className="card-body items-center text-center">
               <FaShieldAlt className="text-4xl text-primary mb-4" />
               <h3 className="text-lg font-semibold">
@@ -51,7 +59,9 @@ const About = () => {
               </p>
             </div>
           </div>
-          <div className="card bg-base-200 shadow-sm">
+
+          {/* Card 4 */}
+          <div className="card bg-base-200 shadow-xs shadow-neutral h-full transition-all duration-300 hover:shadow-md">
             <div className="card-body items-center text-center">
               <FaChartLine className="text-4xl text-primary mb-4" />
               <h3 className="text-lg font-semibold">Data-Driven Insights</h3>

@@ -23,7 +23,7 @@ const RegisterEmployee = () => {
           </Link>
         </p>
 
-        <div className="card-body px-0">
+        <form onSubmit={handleSubmit} className="card-body px-0">
           <fieldset className="fieldset flex flex-col gap-3">
             <label {...register("name")} className="label">
               Name
@@ -59,7 +59,7 @@ const RegisterEmployee = () => {
               </Link>
             </p>
           </fieldset>
-        </div>
+        </form>
       </div>
     </div>
   );

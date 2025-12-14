@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 
 const RootLayout = () => {
     return (
-        <div className='max-w-11/12 md:max-w-10/12 mx-auto'>
+        <div className='max-w-11/12 md:max-w-10/12 mx-auto space-y-3'>
             <Helmet>
                 <title>Home | AssetVerse</title>
             </Helmet>
