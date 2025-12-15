@@ -68,7 +68,7 @@ const RegisterEmployee = () => {
               <input
                 {...register("name", { required: true })}
                 type="text"
-                className="input outline-none border-primary w-full"
+                className="input"
                 placeholder="Full Name"
               />
               {errors.name?.type === "required" && (
@@ -82,7 +82,7 @@ const RegisterEmployee = () => {
               <input
                 {...register("email", { required: true })}
                 type="email"
-                className="input outline-none border-primary w-full"
+                className="input"
                 placeholder="Your Email"
               />
               {errors.email?.type === "required" && (
@@ -96,7 +96,7 @@ const RegisterEmployee = () => {
               <input
                 {...register("password", { required: true })}
                 type={passType ? "text" : "password"}
-                className="input outline-none border-primary w-full"
+                className="input"
                 placeholder="Password"
               />
               <div
@@ -117,7 +117,7 @@ const RegisterEmployee = () => {
               <input
                 {...register("dateOfBirth", { required: true })}
                 type="date"
-                className="input outline-none border-primary w-full"
+                className="input"
               />
               {errors.dateOfBirth?.type === "required" && (
                 <p className={`font-medium text-error!`}>Date is Required</p>

@@ -7,7 +7,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
 
 const Login = () => {
-  const axios=useAxios()
+  const axios = useAxios();
   const { loginUser } = useAuth();
   const navigate = useNavigate();
   const [passType, setPassType] = useState(false);
@@ -21,12 +21,12 @@ const Login = () => {
   const handleLogin = async (data) => {
     try {
       await loginUser(data.email, data.password);
-          const result = await loginUser(data.email, data.password);
+      const result = await loginUser(data.email, data.password);
 
-         const res = await axios.post("/jwt", {
-           email: result.user.email,
-         });
-         localStorage.setItem("access-token", res.data.token);
+      const res = await axios.post("/jwt", {
+        email: result.user.email,
+      });
+      localStorage.setItem("access-token", res.data.token);
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -54,7 +54,7 @@ const Login = () => {
               <input
                 {...register("email", { required: true })}
                 type="email"
-                className="input outline-none border-primary w-full"
+                className="input"
                 placeholder="Your Email"
               />
               {errors.email?.type === "required" && (
@@ -68,7 +68,7 @@ const Login = () => {
               <input
                 {...register("password", { required: true })}
                 type={passType ? "text" : "password"}
-                className="input outline-none border-primary w-full"
+                className="input"
                 placeholder="Password"
               />
               <div

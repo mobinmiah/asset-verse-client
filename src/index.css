@@ -70,6 +70,12 @@ body {
     font-weight: 600;
 }
 
+.input{
+    width: 100%;
+    border: 1px solid var(--color-primary);
+    outline: none;
+}
+
 p {
     color: var(--color-neutral);
 }

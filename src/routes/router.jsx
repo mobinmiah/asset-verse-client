@@ -8,6 +8,7 @@ import RegisterHR from "../pages/authPages/Register/RegisterHR";
 import PrivateRoute from "../routes/PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 import DashboardHome from "../pages/dashboard/DashboardHome/DashboardHome";
+import AddAsset from "../pages/dashboard/AddAsset/AddAsset";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
         index: true,
         Component: DashboardHome,
       },
+      {
+        path:'add-asset',
+        Component:AddAsset
+      }
     ],
   },
 ]);
