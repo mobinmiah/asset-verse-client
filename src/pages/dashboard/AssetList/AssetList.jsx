@@ -21,13 +21,11 @@ const AssetList = () => {
   });
 
   const openEditModal = (product) => {
-    // Prefill form values
     setValue("productName", product.productName);
     setValue("productImage", product.productImage);
     setValue("productType", product.productType);
     setValue("productQuantity", product.productQuantity);
 
-    // Open modal
     document.getElementById(`update_modal_${product._id}`).showModal();
   };
 
@@ -143,6 +141,7 @@ const AssetList = () => {
                           <input
                             {...register("productName")}
                             className="input input-bordered w-full"
+                            
                           />
                         </div>
 

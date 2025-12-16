@@ -56,7 +56,7 @@ const DashboardLayout = () => {
             <Link
               to="/"
               className="tooltip tooltip-bottom"
-              data-tip={`${user?.displayName} | Home`}
+              data-tip={`${user?.displayName} | Main Home`}
             >
               {photo ? (
                 <img
