@@ -5,6 +5,7 @@ import useAuth from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import useAxios from "../../../hooks/useAxios";
+import { toast } from "react-toastify";
 
 const RegisterHR = () => {
   const axios = useAxios();
@@ -29,7 +30,9 @@ const RegisterHR = () => {
       await updateUserProfile({
         displayName: data.name,
         photoURL: data.companyLogo,
-      });
+      }).then(()=>{
+        toast(`Welcome To AssetVerse ${data.naem}`)
+      })
 
       const hrInfo = {
         name: data.name,

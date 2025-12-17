@@ -13,6 +13,7 @@ import AssetList from "../pages/dashboard/AssetList/AssetList";
 import UpgradePackage from "../pages/dashboard/UpgradePackage/UpgradePackage";
 import AllRequests from "../pages/dashboard/AllRequests/AllRequests";
 import AllEmployees from "../pages/dashboard/AllEmployees/AllEmployees";
+import HrRoute from "./HrRoute";
 
 export const router = createBrowserRouter([
   {
@@ -57,23 +58,43 @@ export const router = createBrowserRouter([
       },
       {
         path: "add-asset",
-        element:
+        element: (
+          <HrRoute>
+            <AddAsset></AddAsset>
+          </HrRoute>
+        ),
       },
       {
         path: "asset-list",
-        Component: AssetList,
+        element: (
+          <HrRoute>
+            <AssetList></AssetList>
+          </HrRoute>
+        ),
       },
       {
         path: "all-requests",
-        Component: AllRequests,
+        element: (
+          <HrRoute>
+            <AllRequests></AllRequests>
+          </HrRoute>
+        ),
       },
       {
         path: "all-employees",
-        Component: AllEmployees,
+        element: (
+          <HrRoute>
+            <AllEmployees></AllEmployees>
+          </HrRoute>
+        ),
       },
       {
         path: "upgrade-package",
-        Component: UpgradePackage,
+        element: (
+          <HrRoute>
+            <UpgradePackage></UpgradePackage>
+          </HrRoute>
+        ),
       },
     ],
   },

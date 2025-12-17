@@ -5,8 +5,11 @@ import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const { user } = useAuth();
   const axios = useAxios();
   const { loginUser } = useAuth();
   const navigate = useNavigate();
@@ -21,7 +24,11 @@ const Login = () => {
   const handleLogin = async (data) => {
     try {
       await loginUser(data.email, data.password);
-      const result = await loginUser(data.email, data.password);
+      const result = await loginUser(data.email, data.password).then(() => {
+        toast(
+          `Welcome Back ${user?.displayName || user?.providerData?.displayName}`
+        );
+      });
 
       const res = await axios.post("/jwt", {
         email: result.user.email,

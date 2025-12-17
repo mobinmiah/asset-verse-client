@@ -26,7 +26,7 @@ const RegisterEmployee = () => {
       await updateUserProfile({
         displayName: data.name,
         photoURL: data.photoURL,
-      });
+      }).then(`Welcome to AssetVerse ${data.name}`)
       const employeeInfo = {
         name: data.name,
         email: data.email,
