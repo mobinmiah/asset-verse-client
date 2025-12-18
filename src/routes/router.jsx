@@ -14,6 +14,8 @@ import UpgradePackage from "../pages/dashboard/UpgradePackage/UpgradePackage";
 import AllRequests from "../pages/dashboard/AllRequests/AllRequests";
 import AllEmployees from "../pages/dashboard/AllEmployees/AllEmployees";
 import HrRoute from "./HrRoute";
+import EmployeeRoute from "./EmployeeRoute";
+import AllAssetes from "../pages/dashboard/AllAssetes/AllAssetes";
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +96,14 @@ export const router = createBrowserRouter([
           <HrRoute>
             <UpgradePackage></UpgradePackage>
           </HrRoute>
+        ),
+      },
+      {
+        path: "all-assets-employee",
+        element: (
+          <EmployeeRoute>
+            <AllAssetes></AllAssetes>
+          </EmployeeRoute>
         ),
       },
     ],

@@ -10,6 +10,7 @@ import Logo from "../components/Logo/Logo";
 import { IoLogOut } from "react-icons/io5";
 import { GiArmorUpgrade } from "react-icons/gi";
 import { VscGitPullRequestNewChanges } from "react-icons/vsc";
+import { AiFillProduct } from "react-icons/ai";
 
 const DashboardLayout = () => {
   const { user, logOut } = useAuth();
@@ -172,6 +173,20 @@ const DashboardLayout = () => {
               </>
             )}
 
+            {role === "employee" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard/all-assets-employee"
+                    className=" is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="All Assets from All Companies"
+                  >
+                    <AiFillProduct />
+                  </NavLink>
+                </li>
+              </>
+            )}
+
             {/* <li>
               <button
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
@@ -213,9 +228,8 @@ const DashboardLayout = () => {
                 data-tip="LogOut"
               >
                 <IoLogOut />
-              
-                  <span className="is-drawer-close:hidden">LogOut</span>
-              
+
+                <span className="is-drawer-close:hidden">LogOut</span>
               </button>
             </li>
           </ul>

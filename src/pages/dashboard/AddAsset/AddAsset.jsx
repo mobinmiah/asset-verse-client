@@ -44,7 +44,6 @@ const AddAsset = () => {
       productImage: data.productImage,
       productType: data.productType,
       productQuantity: Number(data.productQuantity),
-      availableQuantity: Number(data.productQuantity),
       hrEmail: data.hrEmail,
       companyName: data.companyName,
       createdAt: new Date(),

@@ -7,10 +7,9 @@ import useAxios from "../../../hooks/useAxios";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const RegisterEmployee = () => {
-
   const axios = useAxios();
   const navigate = useNavigate();
-  const { registerUser, updateUserProfile } = useAuth();
+  const { registerUser, updateUserProfile, user } = useAuth();
   const [passType, setPassType] = useState(false);
 
   const {
@@ -26,7 +25,11 @@ const RegisterEmployee = () => {
       await updateUserProfile({
         displayName: data.name,
         photoURL: data.photoURL,
-      }).then(`Welcome to AssetVerse ${data.name}`)
+      }).toast(
+        `Welcome Back ${
+          (user && user?.displayName) || user?.providerData?.displayName
+        }`
+      );
       const employeeInfo = {
         name: data.name,
         email: data.email,
@@ -98,7 +101,7 @@ const RegisterEmployee = () => {
               {" "}
               <label className="label">Photo Url</label>
               <input
-                {...register("photoURL" ,{required:true})}
+                {...register("photoURL", { required: true })}
                 type="text"
                 className="input"
                 placeholder="Photo Url"
@@ -114,7 +117,7 @@ const RegisterEmployee = () => {
             <div>
               <label className="label">Password</label>
               <input
-                {...register("password",{required:true})}
+                {...register("password", { required: true })}
                 type={passType ? "text" : "password"}
                 className="input"
                 placeholder="Password"
@@ -135,7 +138,7 @@ const RegisterEmployee = () => {
             <div>
               <label className="label">Date of Birth</label>
               <input
-                {...register("dateOfBirth",{required:true})}
+                {...register("dateOfBirth", { required: true })}
                 type="date"
                 className="input"
               />

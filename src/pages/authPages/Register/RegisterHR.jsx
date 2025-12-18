@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 const RegisterHR = () => {
   const axios = useAxios();
   const navigate = useNavigate();
-  const { registerUser, updateUserProfile } = useAuth();
+  const { registerUser, updateUserProfile, user } = useAuth();
   const [passType, setPassType] = useState(false);
 
   const {
@@ -30,9 +30,13 @@ const RegisterHR = () => {
       await updateUserProfile({
         displayName: data.name,
         photoURL: data.companyLogo,
-      }).then(()=>{
-        toast(`Welcome To AssetVerse ${data.naem}`)
-      })
+      }).then(() => {
+        toast(
+          `Welcome Back ${
+            (user && user?.displayName) || user?.providerData?.displayName
+          }`
+        );
+      });
 
       const hrInfo = {
         name: data.name,

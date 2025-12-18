@@ -13,7 +13,8 @@ const DashboardHome = () => {
 
   if (role === "hr") {
     return <HRDashboard></HRDashboard>;
-  } else {
+  }
+  if (role === "employee") {
     return <EmployeeDashboard></EmployeeDashboard>;
   }
 };
