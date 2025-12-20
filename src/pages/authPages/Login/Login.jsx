@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
@@ -11,6 +11,7 @@ const Login = () => {
   const axios = useAxios();
   const { loginUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [passType, setPassType] = useState(false);
 
   const {
@@ -37,7 +38,6 @@ const Login = () => {
       toast.error(err.message);
     }
   };
-
 
   return (
     <div className="min-h-screen flex justify-center items-center px-4 py-10">

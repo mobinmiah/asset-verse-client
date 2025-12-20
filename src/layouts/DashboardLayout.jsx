@@ -11,16 +11,30 @@ import { IoLogOut } from "react-icons/io5";
 import { GiArmorUpgrade } from "react-icons/gi";
 import { VscGitPullRequestNewChanges } from "react-icons/vsc";
 import { AiFillProduct } from "react-icons/ai";
+import { CgProfile } from "react-icons/cg";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const DashboardLayout = () => {
   const { user, logOut } = useAuth();
-  const photo = user?.photoURL || user?.providerData?.[0]?.photoURL || "";
-  const { role} = useRole();
+  const axiosSecure = useAxiosSecure();
 
+  // const photo = user?.photoURL || user?.providerData?.[0]?.photoURL || "";
+  const { role } = useRole();
+  const { data: profile = {}, isLoading } = useQuery({
+    queryKey: ["my-profile", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/${user.email}`);
+      return res.data;
+    },
+  });
   const handleLogout = () => {
     logOut();
   };
-
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -53,17 +67,17 @@ const DashboardLayout = () => {
           </div>
           <div className="ml-auto flex items-center gap-3 px-4">
             <Link
-              to="/"
+              to="/dashboard"
               className="tooltip tooltip-bottom"
-              data-tip={`${user?.displayName} | Main Home`}
+              data-tip={`${profile.name} | Dashboard Home`}
             >
-              {photo ? (
+              {(
                 <img
-                  src={photo}
+                  src={profile.companyLogo || profile.photo}
                   alt="User profile"
                   className="w-10 h-10 rounded-full ring-2 ring-primary/30"
                 />
-              ) : (
+              ) || (
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold"></div>
               )}
             </Link>
@@ -177,11 +191,14 @@ const DashboardLayout = () => {
               <>
                 <li>
                   <NavLink
-                    to="/dashboard/all-assets-employee"
+                    to="/dashboard/request-asset"
                     className=" is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="All Assets from All Companies"
+                    data-tip="Request an Asset"
                   >
                     <AiFillProduct />
+                    <span className="is-drawer-close:hidden">
+                      Request an Asset
+                    </span>
                   </NavLink>
                 </li>
               </>
@@ -220,7 +237,16 @@ const DashboardLayout = () => {
                 <span className="is-drawer-close:hidden">Light/Dark</span>
               </div>
             </li>
-
+            <li>
+              <NavLink
+                to="/dashboard/my-profile"
+                className=" is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="My Profile"
+              >
+                <CgProfile />
+                <span className="is-drawer-close:hidden">My Profile</span>
+              </NavLink>
+            </li>
             <li>
               <button
                 onClick={handleLogout}

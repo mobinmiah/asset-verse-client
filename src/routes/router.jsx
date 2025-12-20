@@ -15,12 +15,15 @@ import AllRequests from "../pages/dashboard/AllRequests/AllRequests";
 import AllEmployees from "../pages/dashboard/AllEmployees/AllEmployees";
 import HrRoute from "./HrRoute";
 import EmployeeRoute from "./EmployeeRoute";
-import AllAssetes from "../pages/dashboard/AllAssetes/AllAssetes";
+import RequestAnAsset from "../pages/dashboard/RequestAnAsset/RequestAnAsset";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
+import MyProfile from "../pages/dashboard/MyProfile/MyProfile";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
@@ -99,12 +102,16 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "all-assets-employee",
+        path: "request-asset",
         element: (
           <EmployeeRoute>
-            <AllAssetes></AllAssetes>
+            <RequestAnAsset></RequestAnAsset>
           </EmployeeRoute>
         ),
+      },
+      {
+        path: "my-profile",
+        Component: MyProfile,
       },
     ],
   },

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import useAxios from "../../../hooks/useAxios";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const RegisterEmployee = () => {
   const axios = useAxios();
   const navigate = useNavigate();
-  const { registerUser, updateUserProfile, user } = useAuth();
+  const location = useLocation();
+  const { registerUser, updateUserProfile } = useAuth();
   const [passType, setPassType] = useState(false);
 
   const {
@@ -19,32 +21,30 @@ const RegisterEmployee = () => {
   } = useForm();
 
   const handleRegistration = async (data) => {
-    try {
-      data.role = "employee";
-      await registerUser(data.email, data.password);
-      await updateUserProfile({
-        displayName: data.name,
-        photoURL: data.photoURL,
-      }).toast(
-        `Welcome Back ${
-          (user && user?.displayName) || user?.providerData?.displayName
-        }`
-      );
-      const employeeInfo = {
-        name: data.name,
-        email: data.email,
-        photo: data.photoURL,
-        role: "employee",
-        dateOfBirth: data.dateOfBirth,
-        createdAt: new Date(),
-      };
+    data.role = "employee";
+    await registerUser(data.email, data.password);
+    await updateUserProfile({
+      displayName: data.name,
+      photoURL: data.photoURL,
+    });
 
-      const res = await axios.post("/users", employeeInfo);
-      console.log("User saved:", res.data);
+    toast.success("Welcome to AssetVerse");
+
+    const employeeInfo = {
+      name: data.name,
+      email: data.email,
+      photo: data.photoURL,
+      role: "employee",
+      dateOfBirth: data.dateOfBirth,
+      createdAt: new Date(),
+    };
+    const res = await axios.post("/users", employeeInfo);
+
+    if (res.data.insertedId) {
       navigate(location?.state || "/");
-    } catch (error) {
-      console.error(error);
     }
+
+    console.log("User saved:", res.data);
   };
 
   return (

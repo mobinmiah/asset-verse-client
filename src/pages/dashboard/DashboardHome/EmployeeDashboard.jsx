@@ -1,5 +1,5 @@
 import React from 'react';
-import AllAssetes from '../AllAssetes/AllAssetes';
+import RequestAnAsset from '../RequestAnAsset/RequestAnAsset';
 
 const EmployeeDashboard = () => {
    
@@ -8,7 +8,7 @@ const EmployeeDashboard = () => {
           <h2 className="text-2xl font-bold mb-4 text-center text-primary">
             Employee Dashboard
           </h2>
-          <AllAssetes></AllAssetes>
+          <RequestAnAsset></RequestAnAsset>
         </div>
       );
 };

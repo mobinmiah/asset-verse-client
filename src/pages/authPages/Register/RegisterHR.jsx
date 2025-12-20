@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
@@ -10,7 +10,8 @@ import { toast } from "react-toastify";
 const RegisterHR = () => {
   const axios = useAxios();
   const navigate = useNavigate();
-  const { registerUser, updateUserProfile, user } = useAuth();
+  const location = useLocation();
+  const { registerUser, updateUserProfile } = useAuth();
   const [passType, setPassType] = useState(false);
 
   const {
@@ -31,11 +32,7 @@ const RegisterHR = () => {
         displayName: data.name,
         photoURL: data.companyLogo,
       }).then(() => {
-        toast(
-          `Welcome Back ${
-            (user && user?.displayName) || user?.providerData?.displayName
-          }`
-        );
+        toast(`Welcome Back to Assetverse`);
       });
 
       const hrInfo = {
@@ -85,7 +82,7 @@ const RegisterHR = () => {
               {" "}
               <label className="label">Name</label>
               <input
-                {...register("name")}
+                {...register("name", { required: true })}
                 type="text"
                 className="input"
                 placeholder="Full Name"
@@ -99,7 +96,7 @@ const RegisterHR = () => {
               {" "}
               <label className="label">Company Name</label>
               <input
-                {...register("companyName")}
+                {...register("companyName", { required: true })}
                 type="text"
                 className="input"
                 placeholder="Company Name"
@@ -115,10 +112,10 @@ const RegisterHR = () => {
               {" "}
               <label className="label">Company Logo</label>
               <input
-                {...register("companyLogo")}
+                {...register("companyLogo", { required: true })}
                 type="text"
                 className="input"
-                placeholder="Company Name"
+                placeholder="Company Logo URL"
               />
               {errors.companyLogo?.type === "required" && (
                 <p className={`font-medium text-error!`}>
@@ -131,7 +128,7 @@ const RegisterHR = () => {
               {" "}
               <label className="label">Email</label>
               <input
-                {...register("email")}
+                {...register("email", { required: true })}
                 type="email"
                 className="input"
                 placeholder="Professional Email"
@@ -144,7 +141,7 @@ const RegisterHR = () => {
             <div>
               <label className="label">Password</label>
               <input
-                {...register("password")}
+                {...register("password", { required: true })}
                 type={passType ? "text" : "password"}
                 className="input"
                 placeholder="Password"
@@ -165,7 +162,7 @@ const RegisterHR = () => {
             <div>
               <label className="label">Date of Birth</label>
               <input
-                {...register("dateOfBirth")}
+                {...register("dateOfBirth", { required: true })}
                 type="date"
                 className="input"
               />
