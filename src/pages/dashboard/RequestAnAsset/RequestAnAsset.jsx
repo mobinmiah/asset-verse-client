@@ -10,25 +10,29 @@ const RequestAnAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [currentPage, setCurrentPage] = useState(0);
 
-  const limit = 12;
+  const limit = 10;
 
-  useEffect(() => {
-    setCurrentPage(0);
-  }, [searchText]);
+  const {
+    data = {},
+    isLoading,
 
-  const { data = {}, isLoading } = useQuery({
-    queryKey: ["public-assets", searchText, currentPage],
+  } = useQuery({
+    queryKey: ["public-assets", searchQuery, currentPage],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/assets/public?searchText=${searchText}&limit=${limit}&skip=${
+        `/assets/public?searchText=${searchQuery}&limit=${limit}&skip=${
           currentPage * limit
         }`
       );
       return res.data;
     },
     keepPreviousData: true,
+    staleTime: 1000 * 5,
+    refetchOnWindowFocus: false,
   });
 
   const assets = data.assets || [];
@@ -49,36 +53,39 @@ const RequestAnAsset = () => {
 
     setIsSubmitting(false);
   };
+  const handleSearch = () => {
+    setCurrentPage(0);
+    setSearchQuery(searchText.trim());
+  };
 
   if (isLoading) return <Loading />;
 
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-10 bg-base-100 rounded-xl shadow-sm">
-      <Helmet><title>RequestAsset</title></Helmet>
+      <Helmet>
+        <title>RequestAsset</title>
+      </Helmet>
       <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-6">
         Request an Asset from Any Companye
       </h2>
 
       {/* Search */}
-      <div className="flex justify-center mb-6">
-        <div className="w-full max-w-sm">
-          <label className="input flex items-center gap-2">
-            <svg
-              className="h-5 w-5 opacity-50"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" />
-              <path d="m21 21-4.3-4.3" fill="none" stroke="currentColor" />
-            </svg>
-            <input
-              type="search"
-              className="grow"
-              placeholder="Search asset"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-          </label>
+      <div className="flex justify-center  mb-6">
+        <div className="flex gap-2 w-full max-w-sm relative">
+          <input
+            type="text"
+            className="input input-bordered flex-1"
+            placeholder="Search asset"
+            value={searchText}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <button
+            onClick={handleSearch}
+            className="btn btn-primary absolute right-0 z-50"
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -87,8 +94,9 @@ const RequestAnAsset = () => {
           No assets found.
         </p>
       )}
+ 
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
         {assets.map((product) => (
           <div
             key={product._id}
@@ -103,7 +111,6 @@ const RequestAnAsset = () => {
             </figure>
 
             <div className="card-body p-4">
-
               <h3 className="text-primary font-semibold text-center md:text-left">
                 {product.productName}
               </h3>

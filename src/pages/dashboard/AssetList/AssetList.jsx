@@ -6,210 +6,229 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
 const AssetList = () => {
-  const [selectedAsset, setSelectedAsset] = useState(null);
   const modalRef = useRef(null);
   const axiosSecure = useAxiosSecure();
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
   const {
     data: assets = [],
     isLoading,
+
     refetch,
   } = useQuery({
-    queryKey: ["assets"],
+    queryKey: ["assets", searchQuery],
     queryFn: async () => {
-      const res = await axiosSecure.get("/assets");
+      const res = await axiosSecure.get(`/assets?searchText=${searchQuery}`);
       return res.data;
     },
+    enabled: !!searchQuery || searchQuery === "", // initial load allowed
+    keepPreviousData: true,
+    staleTime: 1000 * 5,
+    refetchOnWindowFocus: false,
   });
-  const openEditModal = (product) => {
-    setSelectedAsset(product);
-    setValue("productName", product.productName);
-    setValue("productImage", product.productImage);
-    setValue("productType", product.productType);
-    setValue("productQuantity", product.productQuantity);
+
+  const openEditModal = (asset) => {
+    setSelectedAsset(asset);
+    setValue("productName", asset.productName);
+    setValue("productImage", asset.productImage);
+    setValue("productType", asset.productType);
+    setValue("productQuantity", asset.productQuantity);
     modalRef.current.showModal();
   };
 
-  const handleEditAsset = async (id, data) => {
-    modalRef.current.close();
+  const onSubmitEdit = async (data) => {
+    if (!selectedAsset) return;
 
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: "You want to update this product!",
+      text: "You want to update this asset!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
       confirmButtonText: "Yes, update it!",
     });
 
-    if (result.isConfirmed) {
-      try {
-        const res = await axiosSecure.patch(`/assets/${id}`, data);
+    if (!result.isConfirmed) return;
 
-        if (res.data.modifiedCount) {
-          refetch();
-          Swal.fire({
-            title: "Updated!",
-            text: "Your product has been updated.",
-            icon: "success",
-          });
-        }
-      } catch (err) {
-        Swal.fire("Error", "Update failed", err.message);
+    try {
+      const res = await axiosSecure.patch(`/assets/${selectedAsset._id}`, data);
+
+      if (res.data.modifiedCount) {
+        modalRef.current.close();
+        reset();
+        refetch();
+        Swal.fire("Updated!", "Asset updated successfully.", "success");
       }
+    } catch (err) {
+      Swal.fire({
+        title: "Error",
+        text: err.message || "Update failed",
+        icon: "error",
+      });
     }
   };
 
-  const handleDeleteAsset = (id) => {
-    Swal.fire({
+  const handleDeleteAsset = async (id) => {
+    const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axiosSecure.delete(`/assets/${id}`).then((res) => {
-          if (res.data.deletedCount) {
-            modalRef.current.close();
-            refetch();
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your product has been deleted.",
-              icon: "success",
-            });
-          }
-        });
-      }
     });
-  };
-  const onSubmitEdit = (data) => {
-    if (!selectedAsset) return;
 
-    handleEditAsset(selectedAsset._id, data);
+    if (!result.isConfirmed) return;
+
+    const res = await axiosSecure.delete(`/assets/${id}`);
+
+    if (res.data.deletedCount) {
+      refetch();
+      Swal.fire("Deleted!", "Asset has been deleted.", "success");
+    }
+  };
+  const handleSearch = () => {
+    setSearchQuery(searchText.trim());
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    handleSubmit(onSubmitEdit)();
-  };
-
-  if (isLoading) {
-    return <Loading></Loading>;
-  }
+  if (isLoading) return <Loading />;
 
   return (
     <div>
       <h2 className="text-3xl font-bold mb-6 text-center text-primary">
-        All Assets : ({assets.length})
+        All Assets ({assets.length})
       </h2>
+
+      <div className="flex justify-center  mb-6">
+        <div className="flex gap-2 w-full max-w-sm relative">
+          <input
+            type="text"
+            className="input input-bordered flex-1"
+            placeholder="Search asset"
+            value={searchText}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <button
+            onClick={handleSearch}
+            className="btn btn-primary absolute right-0 z-50"
+          >
+            Search
+          </button>
+        </div>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="table">
-          {/* head */}
           <thead>
             <tr>
               <th>#</th>
               <th>Name</th>
+              <th>Type</th>
               <th>Quantity</th>
               <th>Date Added</th>
-              <th>Acions</th>
+              <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
-            {assets.map((product, index) => (
-              <tr key={product._id}>
-                <th>{index + 1}</th>
+            {assets.length === 0 && (
+              <tr>
+                <td colSpan="5" className="text-center text-gray-500">
+                  No assets found
+                </td>
+              </tr>
+            )}
+
+            {assets.map((asset, index) => (
+              <tr key={asset._id}>
+                <td>{index + 1}</td>
+
                 <td>
                   <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle h-12 w-12">
-                        <img
-                          src={product.productImage}
-                          alt={`Product Image ${product.productName}`}
-                        />
-                      </div>
-                    </div>
+                    <img
+                      src={asset.productImage}
+                      alt={asset.productName}
+                      className="w-12 h-12 rounded"
+                    />
                     <div>
-                      <div className="font-bold">{product.productName}</div>
-                      <div className="text-sm opacity-50">
-                        {product.productType}
-                      </div>
+                      <p className="font-bold">{asset.productName}</p>
                     </div>
                   </div>
                 </td>
-                <td>{product.productQuantity}</td>
-                <td>{new Date(product.createdAt).toLocaleString()}</td>
-                <th className="space-x-1">
+                <td>{asset.productType}</td>
+                <td>{asset.productQuantity}</td>
+                <td>{new Date(asset.createdAt).toLocaleDateString()}</td>
+
+                <td className="space-x-2">
                   <button
-                    onClick={() => openEditModal(product)}
-                    className="btn btn-primary btn-xs"
+                    onClick={() => openEditModal(asset)}
+                    className="btn btn-xs btn-primary"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeleteAsset(product._id)}
-                    className="btn btn-error btn-xs"
+                    onClick={() => handleDeleteAsset(asset._id)}
+                    className="btn btn-xs btn-error"
                   >
                     Delete
                   </button>
-                </th>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
-          <div className="modal-box max-w-lg w-full">
-            <h3 className="text-xl font-bold mb-6 text-center text-primary">
-              Edit Asset
-            </h3>
-
-            {selectedAsset && (
-              <form
-                onSubmit={handleFormSubmit}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-              >
-                <input
-                  {...register("productName")}
-                  className="input input-bordered w-full"
-                />
-                <input
-                  {...register("productImage")}
-                  className="input input-bordered w-full"
-                />
-
-                <select {...register("productType")} className="select w-full">
-                  <option value="Returnable">Returnable</option>
-                  <option value="Non-returnable">Non-returnable</option>
-                </select>
-
-                <input
-                  type="number"
-                  {...register("productQuantity")}
-                  className="input input-bordered w-full"
-                />
-
-                <div className="flex gap-3 mt-4">
-                  <button type="submit" className="btn btn-primary flex-1">
-                    Update
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => modalRef.current.close()}
-                    className="btn btn-outline flex-1"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </dialog>
       </div>
+
+      {/* Edit Modal */}
+      <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="text-xl font-bold mb-4 text-center">Edit Asset</h3>
+
+          <form
+            onSubmit={handleSubmit(onSubmitEdit)}
+            className="grid grid-cols-1 gap-4"
+          >
+            <input
+              {...register("productName", { required: true })}
+              className="input"
+              placeholder="Product Name"
+            />
+            <input
+              {...register("productImage", { required: true })}
+              className="input"
+              placeholder="Image URL"
+            />
+            <select
+              {...register("productType")}
+              className="select border-primary outline-none w-full"
+            >
+              <option value="Returnable">Returnable</option>
+              <option value="Non-returnable">Non-returnable</option>
+            </select>
+            <input
+              type="number"
+              {...register("productQuantity", { required: true })}
+              className="input"
+              placeholder="Quantity"
+            />
+
+            <div className="flex gap-2">
+              <button type="submit" className="btn btn-primary flex-1">
+                Update
+              </button>
+              <button
+                type="button"
+                onClick={() => modalRef.current.close()}
+                className="btn btn-outline flex-1"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </div>
   );
 };
