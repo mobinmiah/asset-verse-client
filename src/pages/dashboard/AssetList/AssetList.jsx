@@ -135,11 +135,11 @@ const AssetList = () => {
           <tbody>
             {assets.length === 0 && (
               <tr>
-                <td colSpan="5" className="text-center text-gray-500">
+                <td colSpan="6" className="text-center text-gray-500">
                   No assets found
                 </td>
               </tr>
-            )}
+            )}  
 
             {assets.map((asset, index) => (
               <tr key={asset._id}>

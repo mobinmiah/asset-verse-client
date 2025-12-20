@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../Loading/Loading";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth();
+  const { user, LogOut } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { data: profile = {}, isLoading } = useQuery({
     queryKey: ["my-profile", user?.email],
@@ -18,8 +18,8 @@ const Navbar = () => {
       return res.data;
     },
   });
-  console.log(profile)
- const profileImage = profile.companyLogo || profile.photo;
+
+  const profileImage = profile.companyLogo || profile.photo;
   const navLinks = (
     <>
       <li>
@@ -40,9 +40,11 @@ const Navbar = () => {
         <div className="">
           <ThemeToggle />
 
-          <button onClick={logOut} className="btn btn-primary sm:btn-sm">
-            Log out
-          </button>
+          {user && (
+            <button onClick={LogOut} className="btn btn-primary sm:btn-sm">
+              Log out
+            </button>
+          )}
         </div>
       </li>
     </>
@@ -113,7 +115,7 @@ const Navbar = () => {
               </Link>
 
               <button
-                onClick={logOut}
+                onClick={LogOut}
                 className="btn btn-primary hidden md:block"
               >
                 Log out
