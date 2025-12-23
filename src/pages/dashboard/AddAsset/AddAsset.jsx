@@ -6,7 +6,6 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 const AddAsset = () => {
   const { user } = useAuth();
@@ -39,21 +38,9 @@ const AddAsset = () => {
 
   const handleAddAsset = async (data) => {
     try {
-      const profileImg = data.productImage[0];
-      const formData = new FormData();
-      formData.append("image", profileImg);
-
-      const image_URL_API = `https://api.imgbb.com/1/upload?expiration=600&key=${
-        import.meta.env.VITE_photo_host_key
-      }`;
-
-      const imgRes = await axios.post(image_URL_API, formData);
-      const photoURL = imgRes.data.data.url;
-
-      // 📦 asset object
       const asset = {
         productName: data.productName,
-        productImage: photoURL,
+        productImage: data.photoURL,
         productType: data.productType,
         productQuantity: Number(data.productQuantity),
         hrEmail: data.hrEmail,
@@ -105,10 +92,11 @@ const AddAsset = () => {
           <div>
             <label className="label">Product Image</label>
             <input
-              type="file"
+              type="text"
               accept="image/*"
-              {...register("productImage", { required: true })}
-              className="file-input file-input-bordered w-full"
+              {...register("photoURL", { required: true })}
+              className="input w-full outline-none"
+              placeholder="Photo URL"
             />
             {errors.productImage && (
               <p className="text-error text-sm">Image is required</p>
