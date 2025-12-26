@@ -6,8 +6,10 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Loading/Loading";
+import useRole from "../../hooks/useRole";
 
 const Navbar = () => {
+  const { role, roleLoading } = useRole();
   const { user, LogOut } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { data: profile = {}, isLoading } = useQuery({
@@ -23,18 +25,57 @@ const Navbar = () => {
   const navLinks = (
     <>
       <li>
-        <NavLink to="/">Home</NavLink>
+        <NavLink to="/">
+          Home
+        </NavLink>
       </li>
-      <li>
-        <NavLink to="/register-hr">Join as HR</NavLink>
-      </li>
-      <li>
-        <NavLink to="/register-employee">Join as Employee</NavLink>
-      </li>
+      {!user && (
+        <>
+          <li>
+            <NavLink to="/register-hr">Join as HR</NavLink>
+          </li>
+          <li>
+            <NavLink to="/register-employee">Join as Employee</NavLink>
+          </li>
+        </>
+      )}
       {user && (
         <li>
           <NavLink to="/dashboard">Dashboard</NavLink>
         </li>
+      )}
+
+      {role === "hr" && (
+        <>
+          <li>
+            <NavLink to="/dashboard/asset-list">Asset List</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/add-asset">Add Asset</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/all-requests">All Requests</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/my-employees">My Employees</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/upgrade-package-hr">
+              Upgrade Package
+            </NavLink>
+          </li>
+        </>
+      )}
+
+      {role === "employee" && (
+        <>
+          <li>
+            <NavLink to="/dashboard/my-assets">My Assets</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/request-asset">Request Asset</NavLink>
+          </li>
+        </>
       )}
       <li className="md:hidden">
         <div className="">
@@ -49,7 +90,8 @@ const Navbar = () => {
       </li>
     </>
   );
-  if (isLoading) {
+
+  if (isLoading || roleLoading) {
     return <Loading></Loading>;
   }
   return (
@@ -59,7 +101,7 @@ const Navbar = () => {
           <div className="dropdown">
             <label
               tabIndex={0}
-              className="btn btn-ghost md:hidden"
+              className="btn btn-ghost lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -87,11 +129,11 @@ const Navbar = () => {
 
           <Logo />
         </div>
-        <div className="navbar-center hidden md:flex">
+        <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal gap-2 font-medium">{navLinks}</ul>
         </div>
         <div className="navbar-end gap-4">
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <ThemeToggle />
           </div>
           {user ? (
@@ -116,7 +158,7 @@ const Navbar = () => {
 
               <button
                 onClick={LogOut}
-                className="btn btn-primary hidden md:block"
+                className="btn btn-primary hidden lg:block"
               >
                 Log out
               </button>

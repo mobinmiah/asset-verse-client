@@ -9,7 +9,7 @@ import { FaListOl, FaUsers } from "react-icons/fa6";
 import Logo from "../components/Logo/Logo";
 import { IoLogOut } from "react-icons/io5";
 import { GiArmorUpgrade } from "react-icons/gi";
-import { VscGitPullRequestNewChanges } from "react-icons/vsc";
+import { VscGitPullRequestNewChanges, VscRequestChanges } from "react-icons/vsc";
 import { AiFillProduct } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { useQuery } from "@tanstack/react-query";
@@ -62,7 +62,7 @@ const DashboardLayout = () => {
               <path d="M14 10l2 2l-2 2"></path>
             </svg>
           </label>
-          <div>
+          <div className="tooltip tooltip-bottom" data-tip="Home">
             <Logo></Logo>
           </div>
           <div className="ml-auto flex items-center gap-3 px-4">
@@ -203,7 +203,7 @@ const DashboardLayout = () => {
                     className=" is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Request an Asset"
                   >
-                    <AiFillProduct />
+                    <VscRequestChanges />
                     <span className="is-drawer-close:hidden">
                       Request an Asset
                     </span>
@@ -212,12 +212,11 @@ const DashboardLayout = () => {
               </>
             )}
 
-            {/* <li>
+            <li>
               <button
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Settings"
               >
-            
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -235,7 +234,7 @@ const DashboardLayout = () => {
                 </svg>
                 <span className="is-drawer-close:hidden">Settings</span>
               </button>
-            </li> */}
+            </li>
             <li className="md:hidden">
               <div
                 className=" is-drawer-close:tooltip is-drawer-close:tooltip-right"

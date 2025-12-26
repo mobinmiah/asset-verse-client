@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const AllEmployees = () => {
   const axiosSecure = useAxiosSecure();
-
   const {
+    refetch,
     data: employees = [],
     isLoading,
-    isError,
   } = useQuery({
     queryKey: ["employees"],
     queryFn: async () => {
@@ -19,19 +19,47 @@ const AllEmployees = () => {
     staleTime: 1000 * 10,
   });
 
+ const handleRemoveEmployee = async (id) => {
+   const result = await Swal.fire({
+     title: "Are you sure?",
+     text: "You you want to remove this employee!",
+     icon: "warning",
+     showCancelButton: true,
+     confirmButtonColor: "#3085d6",
+     cancelButtonColor: "#d33",
+     confirmButtonText: "Yes, remove employee!",
+   });
+
+   if (result.isConfirmed) {
+     try {
+       await axiosSecure.delete(`/users/employees/${id}`);
+       await refetch();
+       Swal.fire({
+         title: "Removed!",
+         text: "Employee has been successfully removed.",
+         icon: "success",
+       });
+     } catch (error) {
+       console.error(error);
+       Swal.fire({
+         title: "Error!",
+         text: "Failed to remove employee. Try again.",
+         icon: "error",
+       });
+     }
+   }
+ };
+
+
   if (isLoading) return <Loading />;
 
-  if (isError) {
-    return <p className="text-center text-red-500">Failed to load employees</p>;
-  }
-
   return (
-    <div className="p-4">
+    <div className="bg-base-100 rounded-xl">
       <Helmet>
         <title>My Employees | AssetVerse</title>
       </Helmet>
 
-      <h2 className="text-2xl font-bold mb-4">
+      <h2 className="text-3xl font-bold mb-6 pt-5 text-center text-primary">
         My Employees ({employees.length})
       </h2>
 
@@ -69,7 +97,10 @@ const AllEmployees = () => {
                   <span className="badge badge-primary">{emp.assetCount}</span>
                 </td>
                 <td>
-                  <button className="btn btn-xs btn-error" disabled>
+                  <button
+                    onClick={() => handleRemoveEmployee(emp._id)}
+                    className="btn btn-xs btn-error"
+                  >
                     Remove
                   </button>
                 </td>

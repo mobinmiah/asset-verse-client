@@ -115,7 +115,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "my-assetes",
-        element: <EmployeeRoute><MyAssets></MyAssets></EmployeeRoute>
+        element: (
+          <EmployeeRoute>
+            <MyAssets></MyAssets>
+          </EmployeeRoute>
+        ),
       },
       {
         path: "request-asset",

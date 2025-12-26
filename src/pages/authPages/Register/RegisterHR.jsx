@@ -32,7 +32,7 @@ const RegisterHR = () => {
         displayName: data.name,
         photoURL: data.companyLogo,
       }).then(() => {
-        toast(`Welcome Back to Assetverse`);
+        toast(`Welcome to AssetVerse`);
       });
 
       const hrInfo = {

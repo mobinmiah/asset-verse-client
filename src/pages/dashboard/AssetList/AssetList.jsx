@@ -99,8 +99,8 @@ useEffect(() => {
   if (isLoading) return <Loading />;
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6 text-center text-primary">
+    <div className="bg-base-100 rounded-xl">
+      <h2 className="text-3xl font-bold mb-6 pt-5 text-center text-primary">
         All Assets ({assets.length})
       </h2>
 
@@ -124,7 +124,7 @@ useEffect(() => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="table">
+        <table className="tabtable table-zebra w-fullle">
           <thead>
             <tr>
               <th>#</th>

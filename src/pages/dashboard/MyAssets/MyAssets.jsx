@@ -1,34 +1,61 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
+import useAuth from "../../../hooks/useAuth";
 
 const MyAssets = () => {
+  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
 
-  const { data: assets = [], isLoading } = useQuery({
-    queryKey: ["myAssets"],
+  // Fetch user profile (assigned assets)
+  const { data: profile = {}, isLoading } = useQuery({
+    queryKey: ["my-profile", user?.email],
+    enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get("/my-assets");
+      const res = await axiosSecure.get(`/users/${user.email}`);
+      return res.data;
+    },
+  });
+
+  // Fetch approved asset requests
+  const { data: approvedAssets = [] } = useQuery({
+    queryKey: ["employee-approved-assets"],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        "/asset-requests/employee?status=approved"
+      );
       return res.data;
     },
   });
 
   if (isLoading) return <Loading />;
 
-  const filteredAssets = assets.filter((asset) => {
-    const matchesName = asset.assetName
-      .toLowerCase()
-      .includes(search.toLowerCase());
+ const mergedAssets = (profile.assets || []).map((asset) => {
+   // Find the approved request that matches this asset
+   const request = approvedAssets.find(
+     (r) => r.assetId === asset.assetId && r.status === "approved"
+   );
 
-    const matchesType = typeFilter ? asset.assetType === typeFilter : true;
+   return {
+     ...asset,
+     status: request?.status || asset.status || "pending",
+     requestDate: request?.requestDate || asset.requestDate,
+     approvalDate: request?.actionDate || asset.approvalDate,
+     companyName: request?.companyName || asset.companyName,
+   };
+ });
 
-    return matchesName && matchesType;
-  });
+  // Filter by search and type
+  const filteredAssets = mergedAssets.filter(
+    (asset) =>
+      asset.productName.toLowerCase().includes(search.toLowerCase()) &&
+      (typeFilter ? asset.productType === typeFilter : true)
+  );
 
   return (
     <div className="p-6 space-y-4">
@@ -43,12 +70,12 @@ const MyAssets = () => {
           <input
             type="text"
             placeholder="Search asset..."
-            className="input input-bordered"
+            className="input"
             onChange={(e) => setSearch(e.target.value)}
           />
 
           <select
-            className="select select-bordered"
+            className="select border-primary outline-none"
             onChange={(e) => setTypeFilter(e.target.value)}
           >
             <option value="">All Types</option>
@@ -56,7 +83,7 @@ const MyAssets = () => {
             <option value="Non-returnable">Non-returnable</option>
           </select>
 
-          <button onClick={() => window.print()} className="btn btn-outline">
+          <button onClick={() => window.print()} className="btn btn-primary">
             Print
           </button>
         </div>
@@ -66,62 +93,57 @@ const MyAssets = () => {
         <table className="table table-zebra w-full">
           <thead>
             <tr>
+              <th>#</th>
               <th>Asset</th>
-              <th>Type</th>
-              <th>Company</th>
+              <th>HR Email</th>
               <th>Request Date</th>
               <th>Approval Date</th>
               <th>Status</th>
+              <th>Type</th>
               <th>Action</th>
             </tr>
           </thead>
-
           <tbody>
-            {filteredAssets.map((asset) => (
-              <tr key={asset._id}>
-                <td className="flex items-center gap-3">
-                  <img
-                    src={asset.assetImage}
-                    className="w-10 h-10 rounded"
-                    alt=""
-                  />
-                  {asset.assetName}
-                </td>
-
-                <td>{asset.assetType}</td>
-                <td>{asset.companyName}</td>
-                <td>{new Date(asset.requestDate).toLocaleDateString()}</td>
-                <td>
-                  {asset.approvalDate
-                    ? new Date(asset.approvalDate).toLocaleDateString()
-                    : "—"}
-                </td>
-
-                <td>
-                  <span
-                    className={`badge 
-                    ${asset.status === "Approved" && "badge-success"}
-                    ${asset.status === "Pending" && "badge-warning"}
-                    ${asset.status === "Rejected" && "badge-error"}
-                    ${asset.status === "Returned" && "badge-neutral"}
-                  `}
-                  >
-                    {asset.status}
-                  </span>
-                </td>
-
-                <td>
-                  {asset.status === "Approved" &&
-                    asset.assetType === "Returnable" && (
-                      <button className="btn btn-xs btn-error">Return</button>
+            {filteredAssets.length > 0 ? (
+              filteredAssets.map((asset, index) => (
+                <tr key={asset.assetId}>
+                  <th>{index + 1}</th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src={asset.productImage}
+                            alt={asset.productName}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold">{asset.productName}</div>
+                        <div className="text-sm opacity-50">
+                          {asset.companyName}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{asset.hrEmail}</td>
+                  <td>{new Date(asset.requestDate).toLocaleDateString()}</td>
+                  <td>{new Date(asset.approvalDate).toLocaleDateString()}</td>
+                  <td>{asset.status || "approved"}</td>
+                  <td>{asset.productType}</td>
+                  <td>
+                    {asset.productType === "Returnable" &&
+                    asset.status === "approved" ? (
+                      <button className="btn btn-xs btn-primary">Return</button>
+                    ) : (
+                      <p>Not Returnable</p>
                     )}
-                </td>
-              </tr>
-            ))}
-
-            {filteredAssets.length === 0 && (
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan={7} className="text-center py-6 text-gray-500">
+                <td colSpan={8} className="text-center py-6 text-gray-500">
                   No assets found
                 </td>
               </tr>

@@ -27,19 +27,63 @@ const AllRequests = () => {
 
     if (!result.isConfirmed) return;
 
-    const res = await axiosSecure.patch(`/requests/${id}/status`, {
-      status: action,
+    try {
+      const res = await axiosSecure.patch(`/requests/${id}/status`, {
+        status: action,
+      });
+
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: `Request ${action}`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update request. Try again.",
+      });
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete the request!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
     });
 
+    if (!result.isConfirmed) return;
 
-    if (res.data.success) {
+    try {
+      const res = await axiosSecure.delete(`/requests/${id}`);
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "The request has been deleted.",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
       Swal.fire({
-        icon: "success",
-        title: `Request ${action}`,
-        timer: 1500,
-        showConfirmButton: false,
+        icon: "error",
+        title: "Error",
+        text: "Failed to delete request. Try again.",
       });
-      refetch();
     }
   };
 
@@ -49,7 +93,7 @@ const AllRequests = () => {
         Requests ({requests.length})
       </h2>
       <div className="overflow-x-auto">
-        <table className="table table-zebra">
+        <table className="table table-zebra w-full">
           <thead>
             <tr>
               <th>#</th>
@@ -92,6 +136,13 @@ const AllRequests = () => {
                       className="btn btn-xs btn-error"
                     >
                       Reject
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(request._id)}
+                      className="btn btn-xs btn-warning"
+                    >
+                      Delete
                     </button>
                   </div>
                 </td>
