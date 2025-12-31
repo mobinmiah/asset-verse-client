@@ -14,15 +14,9 @@ It focuses on performance, scalability, clean UI, and a smooth user experience.
 
 ---
 
-## 🖼 Screenshot
-![Project Screenshot](screenshot.png)
-
-*(Upload your screenshot image into the repo and use the same filename here)*
-
----
 
 ## 🧰 Technologies Used
-**Frontend:** React, Tailwind CSS  
+**Frontend:** React, Tailwind CSS, DaisyUI
 **Backend:** Node.js, Express.js  
 **Database:** MongoDB  
 **Authentication:** Firebase  
