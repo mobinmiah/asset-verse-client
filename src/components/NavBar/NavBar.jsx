@@ -147,10 +147,10 @@ const Navbar = () => {
                   <img
                     src={profileImage}
                     alt="User profile"
-                    className="w-10 h-10 rounded-full ring-2 ring-primary/30 object-cover"
+                    className="w-10 h-10 rounded-full ring-2 ring-primary/30 object-cover profile-image hover:ring-primary/50 transition-all duration-200"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold profile-image hover:bg-primary/30 transition-all duration-200">
                     {profile?.name?.[0]?.toUpperCase() || "U"}
                   </div>
                 )}

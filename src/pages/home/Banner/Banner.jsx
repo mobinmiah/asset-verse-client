@@ -9,7 +9,7 @@ const Banner = () => {
           <img
             src={hero}
             alt="AssetVerse dashboard preview"
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-lg shadow-sm bg-primary p-3"
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-lg shadow-lg bg-primary p-3 hover:shadow-xl transition-all duration-300 hover:scale-105"
           />
         </div>
         <div className="flex-1 text-center lg:text-left">
@@ -22,10 +22,10 @@ const Banner = () => {
             and employees to work efficiently from one unified platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <button className="btn btn-primary w-full sm:w-auto">
+            <button className="btn btn-primary w-full sm:w-auto hover:scale-105 transition-transform duration-200">
               Get Started
             </button>
-            <button className="btn btn-outline btn-primary w-full sm:w-auto">
+            <button className="btn btn-outline btn-primary w-full sm:w-auto hover:scale-105 transition-transform duration-200">
               View Features
             </button>
           </div>

@@ -15,8 +15,14 @@ const ThemeToggle = () => {
   }, [theme]);
 
   return (
-    <button onClick={toggleTheme} className="btn btn-ghost">
-      {theme === "light" ? "🌙" : "☀️"}
+    <button 
+      onClick={toggleTheme} 
+      className="btn btn-ghost hover:bg-primary/10 transition-all duration-200 hover:scale-110"
+      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+    >
+      <span className="text-lg transition-transform duration-300 hover:rotate-12">
+        {theme === "light" ? "🌙" : "☀️"}
+      </span>
     </button>
   );
 };

@@ -79,11 +79,11 @@ const DashboardLayout = () => {
                 <img
                   src={profile.companyLogo || profile.photo}
                   alt="User profile"
-                  className="w-10 h-10 rounded-full ring-2 ring-primary/30"
+                  className="w-10 h-10 rounded-full ring-2 ring-primary/30 object-cover profile-image hover:ring-primary/50 transition-all duration-200"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
-                  U
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold profile-image hover:bg-primary/30 transition-all duration-200">
+                  {profile?.name?.[0]?.toUpperCase() || "U"}
                 </div>
               )}
             </Link>
@@ -195,7 +195,7 @@ const DashboardLayout = () => {
               <>
                 <li>
                   <NavLink
-                    to="/dashboard/my-assetes"
+                    to="/dashboard/my-assets"
                     className=" is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="My Assets"
                   >

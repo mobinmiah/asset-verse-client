@@ -115,7 +115,7 @@ export const router = createBrowserRouter([
         Component: PaymentCancelled,
       },
       {
-        path: "my-assetes",
+        path: "my-assets",
         element: (
           <EmployeeRoute>
             <MyAssets></MyAssets>
