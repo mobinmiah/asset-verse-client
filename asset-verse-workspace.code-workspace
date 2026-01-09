@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "name": "Frontend (Client)",
+      "path": "."
+    },
+    {
+      "name": "Backend (Server)", 
+      "path": "../asset-verse-server"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.git": true,
+      "**/dist": true,
+      "**/.next": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.vscode-typescript-next",
+      "bradlc.vscode-tailwindcss",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-json"
+    ]
+  }
+}

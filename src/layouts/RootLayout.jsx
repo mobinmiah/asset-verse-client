@@ -6,12 +6,14 @@ import { Helmet } from 'react-helmet';
 
 const RootLayout = () => {
     return (
-        <div className='max-w-11/12 md:max-w-10/12 mx-auto space-y-3'>
+        <div className='w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 space-y-3 sm:space-y-4 lg:space-y-6'>
             <Helmet>
                 <title>Home | AssetVerse</title>
             </Helmet>
             <Navbar></Navbar>
-            <Outlet></Outlet>
+            <main className="min-h-screen">
+                <Outlet></Outlet>
+            </main>
             <Footer></Footer>
         </div>
     );

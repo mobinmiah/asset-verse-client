@@ -53,10 +53,28 @@ body {
     transition: background-color 0.3s ease;
 }
 
+/* Responsive text sizing */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 640px) {
+    html {
+        font-size: 16px;
+    }
+}
+
 /* Enhanced button styles with micro-interactions */
 .btn {
     transition: all 0.2s ease;
     transform: translateY(0);
+    font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .btn {
+        font-size: 1rem;
+    }
 }
 
 .btn:hover {
@@ -90,6 +108,13 @@ body {
 .label {
     font-weight: 600;
     transition: color 0.2s ease;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .label {
+        font-size: 1rem;
+    }
 }
 
 .input {
@@ -98,6 +123,15 @@ body {
     outline: none;
     font-weight: normal;
     transition: all 0.2s ease;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .input {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
 }
 
 .input:focus {
@@ -108,6 +142,15 @@ body {
 
 p {
     color: var(--color-neutral);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+@media (min-width: 640px) {
+    p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
 }
 
 /* Enhanced card hover effects */
@@ -129,6 +172,13 @@ p {
 /* Enhanced menu item hover effects */
 .menu li>* {
     transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .menu li>* {
+        font-size: 1rem;
+    }
 }
 
 .menu li>*:hover {
@@ -191,6 +241,13 @@ html {
 /* Enhanced tooltip styles */
 .tooltip:before {
     transition: all 0.2s ease;
+    font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .tooltip:before {
+        font-size: 0.875rem;
+    }
 }
 
 /* Improved focus styles for accessibility */
@@ -198,4 +255,68 @@ html {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
     border-radius: 4px;
+}
+
+/* Mobile-first responsive utilities */
+.container-responsive {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+    .container-responsive {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-responsive {
+        padding: 0 2rem;
+    }
+}
+
+/* Responsive grid improvements */
+.grid-responsive {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .grid-responsive {
+        gap: 1.5rem;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-responsive {
+        gap: 2rem;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .grid-responsive {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Touch-friendly interactive elements */
+@media (max-width: 768px) {
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .input {
+        min-height: 44px;
+    }
+
+    .menu li>* {
+        min-height: 44px;
+        padding: 0.75rem;
+    }
 }

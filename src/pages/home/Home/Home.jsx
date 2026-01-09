@@ -10,18 +10,17 @@ import RoleBasedBenefits from "../RoleBasedBenefits/RoleBasedBenefits";
 
 const Home = () => {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
       <Helmet>
         <title>Home | AssetVerse</title>
       </Helmet>
-      <Banner></Banner>
-
-      <About></About>
-      <HowItWorks></HowItWorks>
-      <SecurityTrust></SecurityTrust>
-      <Packages></Packages>
-      <RoleBasedBenefits></RoleBasedBenefits>
-      <Stats></Stats>
+      <Banner />
+      <About />
+      <HowItWorks />
+      <SecurityTrust />
+      <Packages />
+      <RoleBasedBenefits />
+      <Stats />
     </div>
   );
 };

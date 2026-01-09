@@ -142,6 +142,14 @@ export const router = createBrowserRouter([
         path: "my-profile",
         Component: MyProfile,
       },
+      {
+        path: "admin",
+        element: (
+          <AdminRoute>
+            <AdminDashboard></AdminDashboard>
+          </AdminRoute>
+        ),
+      },
     ],
   },
 ]);

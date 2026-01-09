@@ -25,42 +25,83 @@ const Navbar = () => {
   const navLinks = (
     <>
       <li>
-        <NavLink to="/">
+        <NavLink 
+          to="/"
+          className="text-sm sm:text-base font-medium px-2 sm:px-3 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+        >
           Home
         </NavLink>
       </li>
       {!user && (
         <>
           <li>
-            <NavLink to="/register-hr">Join as HR</NavLink>
+            <NavLink 
+              to="/register-hr"
+              className="text-sm sm:text-base font-medium px-2 sm:px-3 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              Join as HR
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/register-employee">Join as Employee</NavLink>
+            <NavLink 
+              to="/register-employee"
+              className="text-sm sm:text-base font-medium px-2 sm:px-3 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              Join as Employee
+            </NavLink>
           </li>
         </>
       )}
       {user && (
         <li>
-          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink 
+            to="/dashboard"
+            className="text-sm sm:text-base font-medium px-2 sm:px-3 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+          >
+            Dashboard
+          </NavLink>
         </li>
       )}
 
       {role === "hr" && (
         <>
-          <li>
-            <NavLink to="/dashboard/asset-list">Asset List</NavLink>
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/asset-list"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              Asset List
+            </NavLink>
           </li>
-          <li>
-            <NavLink to="/dashboard/add-asset">Add Asset</NavLink>
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/add-asset"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              Add Asset
+            </NavLink>
           </li>
-          <li>
-            <NavLink to="/dashboard/all-requests">All Requests</NavLink>
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/all-requests"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              All Requests
+            </NavLink>
           </li>
-          <li>
-            <NavLink to="/dashboard/my-employees">My Employees</NavLink>
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/my-employees"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              My Employees
+            </NavLink>
           </li>
-          <li>
-            <NavLink to="/dashboard/upgrade-package-hr">
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/upgrade-package-hr"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
               Upgrade Package
             </NavLink>
           </li>
@@ -69,20 +110,34 @@ const Navbar = () => {
 
       {role === "employee" && (
         <>
-          <li>
-            <NavLink to="/dashboard/my-assets">My Assets</NavLink>
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/my-assets"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              My Assets
+            </NavLink>
           </li>
-          <li>
-            <NavLink to="/dashboard/request-asset">Request Asset</NavLink>
+          <li className="hidden xl:block">
+            <NavLink 
+              to="/dashboard/request-asset"
+              className="text-sm font-medium px-2 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+            >
+              Request Asset
+            </NavLink>
           </li>
         </>
       )}
-      <li className="md:hidden">
-        <div className="">
+      
+      {/* Mobile-only items */}
+      <li className="lg:hidden">
+        <div className="flex flex-col space-y-2 p-2">
           <ThemeToggle />
-
           {user && (
-            <button onClick={LogOut} className="btn btn-primary sm:btn-sm">
+            <button 
+              onClick={LogOut} 
+              className="btn btn-primary btn-sm w-full"
+            >
               Log out
             </button>
           )}
@@ -91,17 +146,18 @@ const Navbar = () => {
     </>
   );
 
-  if (isLoading ) {
+  if (isLoading) {
     return <Loading></Loading>;
   }
+  
   return (
     <div className="sticky top-0 z-50">
-      <nav className="navbar bg-base-100 shadow-xs shadow-neutral px-4 md:px-8 lg:px-12 rounded-sm">
-        <div className="navbar-start gap-3">
+      <nav className="navbar bg-base-100 shadow-sm px-2 sm:px-4 lg:px-6 xl:px-8 rounded-sm">
+        <div className="navbar-start">
           <div className="dropdown">
             <label
               tabIndex={0}
-              className="btn btn-ghost lg:hidden"
+              className="btn btn-ghost btn-sm lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -121,7 +177,7 @@ const Navbar = () => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 p-3 shadow bg-base-100 rounded-box w-56 max-w-[90vw]"
+              className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg bg-base-100 rounded-box w-64 max-w-[90vw] border border-base-300"
             >
               {navLinks}
             </ul>
@@ -129,45 +185,55 @@ const Navbar = () => {
 
           <Logo />
         </div>
+        
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal gap-2 font-medium">{navLinks}</ul>
+          <ul className="menu menu-horizontal gap-1 font-medium">
+            {navLinks}
+          </ul>
         </div>
-        <div className="navbar-end gap-4">
-          <div className="hidden lg:block">
-            <ThemeToggle />
-          </div>
-          {user ? (
-            <div className="flex items-center gap-3">
-              <Link
-                to="/dashboard/my-profile"
-                className="tooltip tooltip-bottom"
-                data-tip={`Go to Profile | ${profile.name || "User"}`}
-              >
-                {profileImage ? (
-                  <img
-                    src={profileImage}
-                    alt="User profile"
-                    className="w-10 h-10 rounded-full ring-2 ring-primary/30 object-cover profile-image hover:ring-primary/50 transition-all duration-200"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold profile-image hover:bg-primary/30 transition-all duration-200">
-                    {profile?.name?.[0]?.toUpperCase() || "U"}
-                  </div>
-                )}
-              </Link>
-
-              <button
-                onClick={LogOut}
-                className="btn btn-primary hidden lg:block"
-              >
-                Log out
-              </button>
+        
+        <div className="navbar-end">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden lg:block">
+              <ThemeToggle />
             </div>
-          ) : (
-            <Link to="/login" className="btn btn-primary btn-sm sm:btn-md">
-              Log in
-            </Link>
-          )}
+            
+            {user ? (
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Link
+                  to="/dashboard/my-profile"
+                  className="tooltip tooltip-bottom"
+                  data-tip={`Go to Profile | ${profile.name || "User"}`}
+                >
+                  {profileImage ? (
+                    <img
+                      src={profileImage}
+                      alt="User profile"
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-primary/30 object-cover profile-image hover:ring-primary/50 transition-all duration-200"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold profile-image hover:bg-primary/30 transition-all duration-200 text-xs sm:text-sm">
+                      {profile?.name?.[0]?.toUpperCase() || "U"}
+                    </div>
+                  )}
+                </Link>
+
+                <button
+                  onClick={LogOut}
+                  className="btn btn-primary btn-sm sm:btn-md hidden lg:flex"
+                >
+                  Log out
+                </button>
+              </div>
+            ) : (
+              <Link 
+                to="/login" 
+                className="btn btn-primary btn-sm sm:btn-md"
+              >
+                Log in
+              </Link>
+            )}
+          </div>
         </div>
       </nav>
     </div>
