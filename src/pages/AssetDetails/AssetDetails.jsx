@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
@@ -14,7 +14,6 @@ const AssetDetails = () => {
   const { user } = useAuth();
   const { role } = useRole();
   const axiosSecure = useAxiosSecure();
-  const [selectedImage, setSelectedImage] = useState(0);
 
   // Fetch asset details based on role
   const {
@@ -147,7 +146,7 @@ const AssetDetails = () => {
             </li>
             <li>
               <Link
-                to="/admin/assets"
+                to="/assets"
                 className="text-primary hover:text-primary-focus"
               >
                 All Assets
@@ -354,7 +353,7 @@ const AssetDetails = () => {
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span>Admin view - You can see all your assets</span>
+                    <span>Admin view - You can see all the assets</span>
                   </div>
                 )}
 

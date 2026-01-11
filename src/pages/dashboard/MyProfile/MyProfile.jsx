@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -29,7 +29,7 @@ const MyProfile = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       if (role === "admin") {
-        // Fetch from admin collection
+        // Fetch from admin data
         const res = await axiosSecure.get(`/admin/${user.email}`);
         return res.data;
       } else {
@@ -40,8 +40,7 @@ const MyProfile = () => {
     },
   });
 
-  // Reset form when profile data changes or when entering edit mode
-  React.useEffect(() => {
+ useEffect(() => {
     if (profile && Object.keys(profile).length > 0) {
       reset(profile);
     }
@@ -50,7 +49,6 @@ const MyProfile = () => {
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedData) => {
-      // Use the unified endpoint that handles both admin and regular users
       const res = await axiosSecure.patch(`/users/${user.email}`, updatedData);
       return res.data;
     },
@@ -66,9 +64,8 @@ const MyProfile = () => {
   });
 
   const handleUpdateProfile = (data) => {
-    // Remove empty fields to avoid overwriting with empty values
     const cleanedData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== "" && value !== null && value !== undefined)
+      Object.entries(data).filter(([ value]) => value !== "" && value !== null && value !== undefined)
     );
     
     updateProfileMutation.mutate(cleanedData);
@@ -76,7 +73,7 @@ const MyProfile = () => {
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    reset(profile); // Reset form to original values
+    reset(profile);
   };
 
   // Fetch total assets (for HR only)
@@ -92,10 +89,9 @@ const MyProfile = () => {
         const res = await axiosSecure.get("/assets");
         return res.data;
       }
-      // Employees don't need assets data
       return [];
     },
-    enabled: role === "hr" || role === "admin", // Only fetch for HR and Admin
+    enabled: role === "hr" || role === "admin"
   });
 
   if (isLoading || assetsLoading) return <Loading />;
@@ -104,25 +100,25 @@ const MyProfile = () => {
     <div className="min-h-screen flex justify-center items-center px-2 sm:px-4 md:px-16 lg:px-32 md:py-10 bg-base-200">
       <Helmet>
         <title>My Profile - AssetVerse | Manage Your Profile</title>
-        <meta name="description" content="View and edit your profile information, manage your account settings, and update your personal details." />
+        <meta
+          name="description"
+          content="View and edit your profile information, manage your account settings, and update your personal details."
+        />
       </Helmet>
-      
+
       <div className="w-full max-w-6xl bg-base-100 rounded-2xl shadow-xl p-6 md:p-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="flex justify-center">
             <img
               src={
-                profile.role === "hr" 
-                  ? profile.companyLogo 
+                profile.role === "hr"
+                  ? profile.companyLogo
                   : profile.role === "admin"
                   ? profile.image || profile.photo || user?.photoURL
                   : profile.photo
               }
               alt="Profile"
               className="w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 object-cover rounded-xl shadow-2xl"
-              onError={(e) => {
-                e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=14C2ED&color=fff&size=256`;
-              }}
             />
           </div>
 
@@ -137,7 +133,10 @@ const MyProfile = () => {
                 <>
                   {profile.role === "hr" ? (
                     <>
-                      <InfoRow label="Company Name" value={profile.companyName} />
+                      <InfoRow
+                        label="Company Name"
+                        value={profile.companyName}
+                      />
                       <InfoRow label="Email" value={profile.email} />
                       <InfoRow label="Role" value="HR Manager" />
                       <InfoRow
@@ -158,12 +157,18 @@ const MyProfile = () => {
                         label="Package Limit"
                         value={`${profile.packageLimit}`}
                       />
-                      <InfoRow label="Subscription" value={profile.subscription} />
+                      <InfoRow
+                        label="Subscription"
+                        value={profile.subscription}
+                      />
                       <InfoRow
                         label="Paid Plan"
                         value={profile.paid ? "Yes" : "No"}
                       />
-                      <InfoRow label="Date of Birth" value={profile.dateOfBirth} />
+                      <InfoRow
+                        label="Date of Birth"
+                        value={profile.dateOfBirth}
+                      />
                     </>
                   ) : profile.role === "admin" ? (
                     <>
@@ -172,11 +177,6 @@ const MyProfile = () => {
                       <InfoRow
                         label="Joined On"
                         value={new Date(profile.createdAt).toLocaleDateString()}
-                      />
-                      <InfoRow
-                        label="System Assets"
-                        value={totalAssets.length}
-                        to="/assets"
                       />
                       <InfoRow
                         label="Access Level"
@@ -188,7 +188,10 @@ const MyProfile = () => {
                         to="/dashboard/admin"
                       />
                       {profile.dateOfBirth && (
-                        <InfoRow label="Date of Birth" value={profile.dateOfBirth} />
+                        <InfoRow
+                          label="Date of Birth"
+                          value={profile.dateOfBirth}
+                        />
                       )}
                     </>
                   ) : (
@@ -201,6 +204,7 @@ const MyProfile = () => {
                             ?.map((a) => a.companyName)
                             .join(", ") || "None"
                         }
+                        to="/dashboard/my-team"
                       />
                       <InfoRow label="Role" value="Employee" />
                       <InfoRow
@@ -210,82 +214,95 @@ const MyProfile = () => {
                       <InfoRow
                         label="Assets Assigned"
                         value={profile.assets?.length || 0}
-                        to="/dashboard/my-assetes"
+                        to="/dashboard/my-assets"
                       />
-                      <InfoRow label="Date of Birth" value={profile.dateOfBirth} />
+                      <InfoRow
+                        label="Date of Birth"
+                        value={profile.dateOfBirth}
+                      />
                     </>
                   )}
                 </>
               ) : (
                 // Edit Mode
-                <form onSubmit={handleSubmit(handleUpdateProfile)} className="space-y-4">
+                <form
+                  onSubmit={handleSubmit(handleUpdateProfile)}
+                  className="space-y-4"
+                >
                   <div>
                     <label className="label">
                       <span className="label-text font-medium">Name *</span>
                     </label>
                     <input
                       {...register("name", { required: "Name is required" })}
-                      className="input input-bordered w-full focus:input-primary"
+                      className="input w-full focus:input-primary"
                       placeholder="Your full name"
                     />
                     {errors.name && (
-                      <p className="text-error text-sm mt-1">{errors.name.message}</p>
+                      <p className="text-error text-sm mt-1">
+                        {errors.name.message}
+                      </p>
                     )}
                   </div>
 
                   {profile.role === "hr" && (
                     <div>
                       <label className="label">
-                        <span className="label-text font-medium">Company Name *</span>
+                        <span className="label-text font-medium">
+                          Company Name *
+                        </span>
                       </label>
                       <input
-                        {...register("companyName", { required: "Company name is required" })}
-                        className="input input-bordered w-full focus:input-primary"
+                        {...register("companyName", {
+                          required: "Company name is required",
+                        })}
+                        className="input w-full focus:input-primary"
                         placeholder="Your company name"
                       />
                       {errors.companyName && (
-                        <p className="text-error text-sm mt-1">{errors.companyName.message}</p>
+                        <p className="text-error text-sm mt-1">
+                          {errors.companyName.message}
+                        </p>
                       )}
                     </div>
                   )}
 
                   <div>
                     <label className="label">
-                      <span className="label-text font-medium">Date of Birth</span>
+                      <span className="label-text font-medium">
+                        Date of Birth
+                      </span>
                     </label>
                     <input
                       type="date"
                       {...register("dateOfBirth")}
-                      className="input input-bordered w-full focus:input-primary"
+                      className="input w-full focus:input-primary"
                     />
                   </div>
 
                   <div>
                     <label className="label">
                       <span className="label-text font-medium">
-                        {profile.role === "hr" ? "Company Logo URL" : "Profile Image URL"}
+                        {profile.role === "hr"
+                          ? "Company Logo URL"
+                          : "Profile Image URL"}
                       </span>
                     </label>
                     <input
                       type="url"
-                      {...register(profile.role === "hr" ? "companyLogo" : profile.role === "admin" ? "image" : "photo")}
-                      className="input input-bordered w-full focus:input-primary"
+                      {...register(
+                        profile.role === "hr"
+                          ? "companyLogo"
+                          : profile.role === "admin"
+                          ? "image"
+                          : "photo"
+                      )}
+                      className="input w-full focus:input-primary"
                       placeholder="https://example.com/image.jpg"
                     />
                   </div>
 
                   {/* Additional fields for all users */}
-                  <div>
-                    <label className="label">
-                      <span className="label-text font-medium">Phone Number</span>
-                    </label>
-                    <input
-                      type="tel"
-                      {...register("phone")}
-                      className="input input-bordered w-full focus:input-primary"
-                      placeholder="Your phone number"
-                    />
-                  </div>
 
                   <div>
                     <label className="label">
@@ -293,7 +310,7 @@ const MyProfile = () => {
                     </label>
                     <textarea
                       {...register("address")}
-                      className="textarea textarea-bordered w-full focus:textarea-primary resize-none"
+                      className="textarea border-primary w-full outline-none resize-none"
                       rows="3"
                       placeholder="Your address"
                     />
@@ -302,7 +319,9 @@ const MyProfile = () => {
                   {profile.role === "employee" && (
                     <div>
                       <label className="label">
-                        <span className="label-text font-medium">Department</span>
+                        <span className="label-text font-medium">
+                          Department
+                        </span>
                       </label>
                       <select
                         {...register("department")}
@@ -317,7 +336,9 @@ const MyProfile = () => {
                         <option value="Sales">Sales</option>
                         <option value="Administration">Administration</option>
                         <option value="Research">Research & Development</option>
-                        <option value="Customer Service">Customer Service</option>
+                        <option value="Customer Service">
+                          Customer Service
+                        </option>
                         <option value="Other">Other</option>
                       </select>
                     </div>
@@ -336,8 +357,18 @@ const MyProfile = () => {
                         </>
                       ) : (
                         <>
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                           Save Changes
                         </>
@@ -349,8 +380,18 @@ const MyProfile = () => {
                       className="btn btn-outline flex-1"
                       disabled={updateProfileMutation.isLoading}
                     >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                       Cancel
                     </button>
@@ -361,12 +402,22 @@ const MyProfile = () => {
 
             <div className="mt-8 flex justify-center md:justify-start">
               {!isEditing ? (
-                <button 
+                <button
                   onClick={() => setIsEditing(true)}
                   className="btn btn-primary w-full sm:w-auto"
                 >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
                   </svg>
                   Edit Profile
                 </button>
@@ -385,7 +436,7 @@ const InfoRow = ({ label, value, to }) => {
     return (
       <Link
         to={to}
-        className="flex flex-col sm:flex-row sm:justify-between gap-1 hover:text-primary hover:underline"
+        className="flex justify-between  hover:text-primary hover:underline"
       >
         <span className="font-semibold">{label} :</span>
         <span className="sm:text-right break-all">{value}</span>
@@ -394,7 +445,7 @@ const InfoRow = ({ label, value, to }) => {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+    <div className="flex justify-between">
       <span className="font-semibold">{label} :</span>
       <span className="sm:text-right break-all">{value}</span>
     </div>

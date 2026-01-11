@@ -98,11 +98,11 @@ const AllAssets = () => {
     <div className="card h-full bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col">
       {/* Image */}
       <figure className="px-4 pt-4">
-        <div className="w-full h-48 overflow-hidden rounded-xl">
+        <div className="w-full h-60 overflow-hidden rounded-xl">
           <img
             src={asset.productImage}
             alt={asset.productName}
-            className="w-full h-full"
+            className="w-full h-full object-cover"
           />
         </div>
       </figure>
@@ -129,25 +129,25 @@ const AllAssets = () => {
         <div className="text-sm text-base-content/70 space-y-1 flex-1 mt-2">
           <div className="space-y-3">
             {" "}
-            <div>
+            <div className="flex justify-between items-center ">
               <strong>Company:</strong> {asset.companyName}
             </div>
-            <div className="flex justify-between items-center gap-2">
+            <div className="flex justify-between items-center ">
               <strong>HR:</strong>
-              <span className="truncate">{asset.hrEmail}</span>
+              {asset.hrEmail}
             </div>
-            <div>
+            <div className="flex justify-between items-center ">
               <strong>Added:</strong>{" "}
               {new Date(asset.createdAt).toLocaleDateString()}
             </div>
-            <div>
+            <div className="flex justify-between items-center ">
               <strong>Brand:</strong> {asset.brand}
             </div>
           </div>
         </div>
 
         {/* Button always at bottom */}
-        <div className="pt-4 flex justify-end">
+        <div className="flex justify-end">
           <Link to={`/asset/${asset._id}`} className="btn btn-primary">
             Full Details
           </Link>

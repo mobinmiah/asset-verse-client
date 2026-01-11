@@ -41,19 +41,26 @@ const AllAssetList = () => {
 
   // Asset Card Component
   const AssetCard = ({ asset }) => (
-    <div className="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition-all duration-200 space-y-3">
+    <div className="card h-full bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col">
+      {/* Image */}
       <figure className="px-4 pt-4">
-        <img
-          src={asset.productImage}
-          alt={asset.productName}
-          className="rounded-xl h-48 w-full object-cover"
-        />
+        <div className="w-full h-60 overflow-hidden rounded-xl">
+          <img
+            src={asset.productImage}
+            alt={asset.productName}
+            className="w-full h-full object-cover"
+          />
+        </div>
       </figure>
-      <div className="card-body p-4">
-        <h2 className="card-title text-lg font-bold line-clamp-2">
+
+      {/* Body */}
+      <div className="card-body p-4 flex flex-col flex-1">
+        {/* Title */}
+        <h2 className="card-title text-lg font-bold line-clamp-2 min-h-12">
           {asset.productName}
         </h2>
 
+        {/* Badge */}
         <div>
           <span
             className={`badge badge-sm ${
@@ -66,20 +73,28 @@ const AllAssetList = () => {
           </span>
         </div>
 
-        <div className="text-sm text-base-content/70 space-y-1 h-full">
-          <div>
-            <strong>Company:</strong> <span> {asset.companyName}</span>
-          </div>
-          <div>
-            <strong>HR:</strong> <span>{asset.hrEmail}</span>
-          </div>
-          <div>
-            <strong>Added:</strong>{" "}
-            <span> {new Date(asset.createdAt).toLocaleDateString()}</span>
+        {/* Details (growable area) */}
+        <div className="text-sm text-base-content/70 flex-1 mt-3">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center gap-2">
+              <strong>Company:</strong>
+              <span className="truncate">{asset.companyName}</span>
+            </div>
+
+            <div className="flex justify-between items-center gap-2">
+              <strong>HR:</strong>
+              <span className="truncate">{asset.hrEmail}</span>
+            </div>
+
+            <div className="flex justify-between items-center gap-2">
+              <strong>Added:</strong>
+              <span>{new Date(asset.createdAt).toLocaleDateString()}</span>
+            </div>
           </div>
         </div>
 
-        <div className="card-actions justify-end mt-4">
+        {/* Action */}
+        <div className="pt-4 flex justify-end">
           <Link to={`/asset/${asset._id}`} className="btn btn-primary btn-sm">
             View Details
           </Link>
@@ -230,7 +245,7 @@ const AllAssetList = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredAssets.map((asset) => (
             <AssetCard key={asset._id} asset={asset} />
           ))}

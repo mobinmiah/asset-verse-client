@@ -240,7 +240,7 @@ const AdminUsers = () => {
             placeholder="Search users by name, email, company, role..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="form-input pr-10"
+            className="input pr-10"
           />
           {searchTerm && (
             <button
@@ -598,46 +598,52 @@ const AdminUsers = () => {
                       </svg>
                       Organization Details
                     </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div className="md:flex justify-start md:justify-around items-center text-sm">
                       <div>
-                        <span className="text-xs font-medium text-base-content/70">
-                          Company:
-                        </span>
-                        <p className="text-sm font-semibold wrap-break-words">
-                          {selectedUserDetails.companyName}
-                        </p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-base-content/70">
+                            Company:
+                          </span>
+                          <p className="text-sm font-semibold wrap-break-words">
+                            {selectedUserDetails.companyName}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-base-content/70">
+                            Employees:
+                          </span>
+                          <p className="text-sm font-semibold">
+                            {selectedUserDetails.currentEmployees || 0}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-base-content/70">
+                            Package Limit:
+                          </span>
+                          <p className="text-sm font-semibold">
+                            {selectedUserDetails.packageLimit || "N/A"}
+                          </p>
+                        </div>
                       </div>
+                      <div className="w-px h-16 bg-base-300 hidden md:block"></div>
                       <div>
-                        <span className="text-xs font-medium text-base-content/70">
-                          Employees:
-                        </span>
-                        <p className="text-sm font-semibold">
-                          {selectedUserDetails.currentEmployees || 0}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-xs font-medium text-base-content/70">
-                          Package Limit:
-                        </span>
-                        <p className="text-sm font-semibold">
-                          {selectedUserDetails.packageLimit || "N/A"}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-xs font-medium text-base-content/70">
-                          Subscription:
-                        </span>
-                        <p className="text-sm font-semibold">
-                          {selectedUserDetails.subscription || "Basic"}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-xs font-medium text-base-content/70">
-                          Paid Plan:
-                        </span>
-                        <p className="text-sm font-semibold">
-                          {selectedUserDetails.paid ? "Yes" : "No"}
-                        </p>
+                        {" "}
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-base-content/70">
+                            Subscription:
+                          </span>
+                          <p className="text-sm font-semibold">
+                            {selectedUserDetails.subscription || "Basic"}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-base-content/70">
+                            Paid Plan:
+                          </span>
+                          <p className="text-sm font-semibold">
+                            {selectedUserDetails.paid ? "Yes" : "No"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>

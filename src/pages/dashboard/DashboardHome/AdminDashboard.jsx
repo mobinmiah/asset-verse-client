@@ -56,7 +56,7 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div 
           onClick={() => navigate('/dashboard/admin/users')}
-          className="cursor-pointer transform hover:scale-105 transition-all duration-200"
+          className="cursor-pointer transform hover:scale-100 transition-all duration-200"
         >
           <StatCard
             title="Total Users"
@@ -64,12 +64,12 @@ const AdminDashboard = () => {
             icon="👥"
             color="primary"
             trend="up"
-            trendValue={`${overview.totalHRs + overview.totalEmployees} active`}
+          
           />
         </div>
         <div 
           onClick={() => navigate('/dashboard/admin/organizations')}
-          className="cursor-pointer transform hover:scale-105 transition-all duration-200"
+          className="cursor-pointer transform hover:scale-100 transition-all duration-200"
         >
           <StatCard
             title="Organizations"
@@ -77,12 +77,12 @@ const AdminDashboard = () => {
             icon="🏢"
             color="secondary"
             trend="up"
-            trendValue={`${overview.activeOrganizations} active`}
+          
           />
         </div>
         <div 
           onClick={() => navigate('/dashboard/admin/assets')}
-          className="cursor-pointer transform hover:scale-105 transition-all duration-200"
+          className="cursor-pointer transform hover:scale-100 transition-all duration-200"
         >
           <StatCard
             title="Total Assets"
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
             icon="📦"
             color="accent"
             trend="up"
-            trendValue="Across all orgs"
+            
           />
         </div>
         <StatCard
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
           icon="📋"
           color="info"
           trend={overview.pendingRequests > 0 ? "up" : "neutral"}
-          trendValue={`${overview.pendingRequests} pending`}
+         
         />
       </div>
 
