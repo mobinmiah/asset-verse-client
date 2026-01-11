@@ -18,19 +18,8 @@ const AssetStatusChart = () => {
   const { data: statusData = [], isLoading } = useQuery({
     queryKey: ["asset-status"],
     queryFn: async () => {
-      try {
-        const res = await axiosSecure.get("/analytics/asset-status");
-        return res.data;
-      } catch (error) {
-        console.error("Error fetching asset status:", error);
-        // Mock data for demonstration
-        return [
-          { status: "Available", count: 85, percentage: 55 },
-          { status: "Assigned", count: 45, percentage: 29 },
-          { status: "Maintenance", count: 15, percentage: 10 },
-          { status: "Retired", count: 10, percentage: 6 }
-        ];
-      }
+      const res = await axiosSecure.get("/analytics/asset-status");
+      return res.data;
     },
   });
 

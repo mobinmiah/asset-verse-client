@@ -18,18 +18,9 @@ const AssetTypePieChart = () => {
   const { data: assetType = [], isLoading, error } = useQuery({
     queryKey: ["asset-types"],
     queryFn: async () => {
-      try {
-        const res = await axiosSecure.get("/analytics/asset-types");
-        console.log("Asset types data:", res.data);
-        return res.data;
-      } catch (error) {
-        console.error("Error fetching asset types:", error);
-        // Return mock data if API fails
-        return [
-          { name: "Returnable", value: 65 },
-          { name: "Non-returnable", value: 35 }
-        ];
-      }
+      const res = await axiosSecure.get("/analytics/asset-types");
+      console.log("Asset types data:", res.data);
+      return res.data;
     },
   });
 

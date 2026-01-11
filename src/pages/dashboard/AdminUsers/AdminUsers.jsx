@@ -1,30 +1,25 @@
-import React, { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Helmet } from "react-helmet";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import useAuth from "../../../hooks/useAuth";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import React, { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useAuth from '../../../hooks/useAuth';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const AdminUsers = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedUserDetails, setSelectedUserDetails] = useState(null);
 
   // Fetch all users with auto-refresh for real-time data
-  const {
-    data: usersData = [],
-    isLoading,
-    refetch,
-    error,
-  } = useQuery({
-    queryKey: ["admin-users"],
+  const { data: usersData = [], isLoading, refetch, error } = useQuery({
+    queryKey: ['admin-users'],
     queryFn: async () => {
-      console.log("Fetching admin users...");
-      const res = await axiosSecure.get("/users-for-admin"); // Get all users
-      console.log("Admin users response:", res.data);
+      console.log('Fetching admin users...');
+      const res = await axiosSecure.get('/users-for-admin'); // Get all users
+      console.log('Admin users response:', res.data);
       return res.data;
     },
     refetchInterval: 30000, // Refetch every 30 seconds for real-time data
@@ -35,18 +30,18 @@ const AdminUsers = () => {
   // Filter users by search term
   const filteredUsers = useMemo(() => {
     if (!Array.isArray(usersData)) return { hr: [], employee: [] };
-
+    
     // If no search term, return all users
     if (!searchTerm.trim()) {
       return {
-        hr: usersData.filter((user) => user.role === "hr"),
-        employee: usersData.filter((user) => user.role === "employee"),
+        hr: usersData.filter(user => user.role === 'hr'),
+        employee: usersData.filter(user => user.role === 'employee')
       };
     }
-
+    
     // Filter users based on search term (enhanced search)
     const searchLower = searchTerm.toLowerCase().trim();
-    const filtered = usersData.filter((user) => {
+    const filtered = usersData.filter(user => {
       const searchFields = [
         user.name,
         user.email,
@@ -54,17 +49,17 @@ const AdminUsers = () => {
         user.department,
         user.phone,
         user.role,
-        user.subscription,
+        user.subscription
       ];
-
-      return searchFields.some(
-        (field) => field && field.toString().toLowerCase().includes(searchLower)
+      
+      return searchFields.some(field => 
+        field && field.toString().toLowerCase().includes(searchLower)
       );
     });
 
     return {
-      hr: filtered.filter((user) => user.role === "hr"),
-      employee: filtered.filter((user) => user.role === "employee"),
+      hr: filtered.filter(user => user.role === 'hr'),
+      employee: filtered.filter(user => user.role === 'employee')
     };
   }, [usersData, searchTerm]);
 
@@ -75,23 +70,23 @@ const AdminUsers = () => {
       return res.data;
     },
     onSuccess: () => {
-      toast.success("User deleted successfully");
-      queryClient.invalidateQueries(["admin-users"]);
+      toast.success('User deleted successfully');
+      queryClient.invalidateQueries(['admin-users']);
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to delete user");
-    },
+      toast.error(error.response?.data?.message || 'Failed to delete user');
+    }
   });
 
   const handleDeleteUser = async (user) => {
     const result = await Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: `Delete ${user.name}? This action cannot be undone and will clean up all related data.`,
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#EF4444",
-      cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, delete user!",
+      confirmButtonColor: '#EF4444',
+      cancelButtonColor: '#6B7280',
+      confirmButtonText: 'Yes, delete user!'
     });
 
     if (result.isConfirmed) {
@@ -121,29 +116,23 @@ const AdminUsers = () => {
                 />
               ) : (
                 <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs rounded-full">
-                  {user.name?.[0]?.toUpperCase() || "U"}
+                  {user.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               )}
             </div>
           </div>
-
+          
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm truncate">{user.name}</h3>
-            <p className="text-xs text-base-content/70 truncate">
-              {user.email}
-            </p>
+            <p className="text-xs text-base-content/70 truncate">{user.email}</p>
             {user.companyName && (
-              <p className="text-xs text-primary truncate">
-                {user.companyName}
-              </p>
+              <p className="text-xs text-primary truncate">{user.companyName}</p>
             )}
-
+            
             <div className="flex items-center gap-1 mt-1">
-              <span
-                className={`badge badge-xs ${
-                  user.role === "hr" ? "badge-primary" : "badge-secondary"
-                }`}
-              >
+              <span className={`badge badge-xs ${
+                user.role === 'hr' ? 'badge-primary' : 'badge-secondary'
+              }`}>
                 {user.role?.toUpperCase()}
               </span>
             </div>
@@ -152,13 +141,13 @@ const AdminUsers = () => {
 
         {/* User Details */}
         <div className="mt-2 text-xs text-base-content/60">
-          {user.role === "hr" && (
+          {user.role === 'hr' && (
             <div className="flex justify-between">
               <span>Employees: {user.currentEmployees || 0}</span>
-              <span>Plan: {user.subscription || "Basic"}</span>
+              <span>Plan: {user.subscription || 'Basic'}</span>
             </div>
           )}
-          {user.role === "employee" && (
+          {user.role === 'employee' && (
             <div>Assets: {user.assets?.length || 0}</div>
           )}
           <div className="mt-1">
@@ -208,9 +197,12 @@ const AdminUsers = () => {
             Error Loading Users
           </h3>
           <p className="text-base-content/50 mb-4">
-            {error.message || "Failed to load users. Please try again."}
+            {error.message || 'Failed to load users. Please try again.'}
           </p>
-          <button className="btn btn-primary" onClick={() => refetch()}>
+          <button
+            className="btn btn-primary"
+            onClick={() => refetch()}
+          >
             Try Again
           </button>
         </div>
@@ -534,26 +526,16 @@ const AdminUsers = () => {
                     Basic Information
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div>
+                    <div className="flex justify-between items-center lg:felx-none">
                       <span className="text-xs font-medium text-base-content/70">
                         Email:
                       </span>
-                      <p className="text-sm font-semibold break-words">
+                      <p className="text-sm font-semibold wrap-break-words">
                         {selectedUserDetails.email}
                       </p>
                     </div>
-                    {selectedUserDetails.phone && (
-                      <div>
-                        <span className="text-xs font-medium text-base-content/70">
-                          Phone:
-                        </span>
-                        <p className="text-sm font-semibold">
-                          {selectedUserDetails.phone}
-                        </p>
-                      </div>
-                    )}
                     {selectedUserDetails.dateOfBirth && (
-                      <div>
+                      <div className="flex justify-between items-center lg:felx-none">
                         <span className="text-xs font-medium text-base-content/70">
                           Date of Birth:
                         </span>
@@ -562,7 +544,7 @@ const AdminUsers = () => {
                         </p>
                       </div>
                     )}
-                    <div>
+                    <div className="flex justify-between items-center lg:felx-none">
                       <span className="text-xs font-medium text-base-content/70">
                         Joined:
                       </span>
@@ -572,7 +554,7 @@ const AdminUsers = () => {
                         ).toLocaleDateString()}
                       </p>
                     </div>
-                    <div>
+                    <div className="flex justify-between items-center lg:felx-none">
                       <span className="text-xs font-medium text-base-content/70">
                         Last Updated:
                       </span>
@@ -590,7 +572,7 @@ const AdminUsers = () => {
                       <span className="text-xs font-medium text-base-content/70">
                         Address:
                       </span>
-                      <p className="text-sm font-semibold break-words">
+                      <p className="text-sm font-semibold wrap-break-words">
                         {selectedUserDetails.address}
                       </p>
                     </div>
@@ -621,7 +603,7 @@ const AdminUsers = () => {
                         <span className="text-xs font-medium text-base-content/70">
                           Company:
                         </span>
-                        <p className="text-sm font-semibold break-words">
+                        <p className="text-sm font-semibold wrap-break-words">
                           {selectedUserDetails.companyName}
                         </p>
                       </div>

@@ -15,6 +15,7 @@ import AllRequests from "../pages/dashboard/AllRequests/AllRequests";
 import AllEmployees from "../pages/dashboard/AllEmployees/AllEmployees";
 import HrRoute from "./HrRoute";
 import EmployeeRoute from "./EmployeeRoute";
+import AdminRoute from "./AdminRoute";
 import RequestAnAsset from "../pages/dashboard/RequestAnAsset/RequestAnAsset";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import MyProfile from "../pages/dashboard/MyProfile/MyProfile";
@@ -22,34 +23,71 @@ import PaymentSuccess from "../pages/dashboard/PaymentSuccess/PaymentSuccess";
 import PaymentCancelled from "../pages/dashboard/PaymentCancelled/PaymentCancelled";
 import MyAssets from "../pages/dashboard/MyAssets/MyAssets";
 import MyTeam from "../pages/dashboard/MyTeam/MyTeam";
+import AllAssets from "../pages/AllAssets/AllAssets";
+import AssetDetails from "../pages/AssetDetails/AssetDetails";
+import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
+import Help from "../pages/Help/Help";
+import AdminDashboard from "../pages/dashboard/DashboardHome/AdminDashboard";
+import AdminUsers from "../pages/dashboard/AdminUsers/AdminUsers";
+import AdminOrganizations from "../pages/dashboard/AdminOrganizations/AdminOrganizations";
+import AllAssetList from "../pages/dashboard/AllAssetList/AllAssetList";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout,
-    errorElement: <ErrorPage></ErrorPage>,
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        Component: Home,
+        element: <Home />,
+      },
+      {
+        path: "about",
+        element: <About />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
+      {
+        path: "help",
+        element: <Help />,
+      },
+      {
+        path: "assets",
+        element: (
+          <PrivateRoute>
+            <AllAssets />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "asset/:id",
+        element: (
+          <PrivateRoute>
+            <AssetDetails />
+          </PrivateRoute>
+        ),
       },
     ],
   },
   {
     path: "/",
-    Component: AuthLayout,
+    element: <AuthLayout />,
     children: [
       {
         path: "login",
-        Component: Login,
+        element: <Login />,
       },
       {
         path: "register-employee",
-        Component: RegisterEmployee,
+        element: <RegisterEmployee />,
       },
       {
         path: "register-hr",
-        Component: RegisterHR,
+        element: <RegisterHR />,
       },
     ],
   },
@@ -57,19 +95,20 @@ export const router = createBrowserRouter([
     path: "dashboard",
     element: (
       <PrivateRoute>
-        <DashboardLayout></DashboardLayout>
+        <DashboardLayout />
       </PrivateRoute>
     ),
     children: [
       {
         index: true,
-        Component: DashboardHome,
+        element: <DashboardHome />,
       },
+      // HR Routes
       {
         path: "add-asset",
         element: (
           <HrRoute>
-            <AddAsset></AddAsset>
+            <AddAsset />
           </HrRoute>
         ),
       },
@@ -77,7 +116,7 @@ export const router = createBrowserRouter([
         path: "asset-list",
         element: (
           <HrRoute>
-            <AssetList></AssetList>
+            <AssetList />
           </HrRoute>
         ),
       },
@@ -85,7 +124,7 @@ export const router = createBrowserRouter([
         path: "all-requests",
         element: (
           <HrRoute>
-            <AllRequests></AllRequests>
+            <AllRequests />
           </HrRoute>
         ),
       },
@@ -93,7 +132,7 @@ export const router = createBrowserRouter([
         path: "my-employees",
         element: (
           <HrRoute>
-            <AllEmployees></AllEmployees>
+            <AllEmployees />
           </HrRoute>
         ),
       },
@@ -101,24 +140,16 @@ export const router = createBrowserRouter([
         path: "upgrade-package-hr",
         element: (
           <HrRoute>
-            <UpgradePackage></UpgradePackage>
+            <UpgradePackage />
           </HrRoute>
         ),
       },
-
-      {
-        path: "payment-success",
-        Component: PaymentSuccess,
-      },
-      {
-        path: "payment-cancelled",
-        Component: PaymentCancelled,
-      },
+      // Employee Routes
       {
         path: "my-assets",
         element: (
           <EmployeeRoute>
-            <MyAssets></MyAssets>
+            <MyAssets />
           </EmployeeRoute>
         ),
       },
@@ -126,7 +157,7 @@ export const router = createBrowserRouter([
         path: "request-asset",
         element: (
           <EmployeeRoute>
-            <RequestAnAsset></RequestAnAsset>
+            <RequestAnAsset />
           </EmployeeRoute>
         ),
       },
@@ -134,21 +165,55 @@ export const router = createBrowserRouter([
         path: "my-team",
         element: (
           <EmployeeRoute>
-            <MyTeam></MyTeam>
+            <MyTeam />
           </EmployeeRoute>
         ),
       },
-      {
-        path: "my-profile",
-        Component: MyProfile,
-      },
+      // Admin Routes
       {
         path: "admin",
         element: (
           <AdminRoute>
-            <AdminDashboard></AdminDashboard>
+            <AdminDashboard />
           </AdminRoute>
         ),
+      },
+      {
+        path: "admin/assets",
+        element: (
+          <AdminRoute>
+            <AllAssetList />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/users",
+        element: (
+          <AdminRoute>
+            <AdminUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/organizations",
+        element: (
+          <AdminRoute>
+            <AdminOrganizations />
+          </AdminRoute>
+        ),
+      },
+      // Shared Routes
+      {
+        path: "payment-success",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "payment-cancelled",
+        element: <PaymentCancelled />,
+      },
+      {
+        path: "my-profile",
+        element: <MyProfile />,
       },
     ],
   },

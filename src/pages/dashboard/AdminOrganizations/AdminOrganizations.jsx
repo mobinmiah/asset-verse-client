@@ -1,103 +1,20 @@
-import React, { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Helmet } from "react-helmet";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import React, { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const AdminOrganizations = () => {
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [subscriptionFilter, setSubscriptionFilter] = useState("all");
-  const [paymentFilter, setPaymentFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [subscriptionFilter, setSubscriptionFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
   const [selectedOrgDetails, setSelectedOrgDetails] = useState(null);
 
-  const handleSyncEmployeeCounts = () => {
-    Swal.fire({
-      title: "Sync Employee Counts?",
-      text: "This will update employee counts for all organizations based on actual database records.",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#14C2ED",
-      cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, sync now!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        syncEmployeeCountsMutation.mutate();
-      }
-    });
-  };
-
-  // Check specific organization mutation
-  const checkOrganizationMutation = useMutation({
-    mutationFn: async (identifier) => {
-      const res = await axiosSecure.get(
-        `/admin/check-organization/${identifier}`
-      );
-      return res.data;
-    },
-    onSuccess: (data) => {
-      Swal.fire({
-        title: `${data.companyName}`,
-        html: `
-          <div class="text-left space-y-2">
-            <p><strong>HR Name:</strong> ${data.hrName}</p>
-            <p><strong>HR Email:</strong> ${data.hrEmail}</p>
-            <p><strong>Employee Limit:</strong> ${data.employeeLimit}</p>
-            <p><strong>Current Employees:</strong> ${
-              data.actualEmployeeCount
-            }</p>
-            <p><strong>Available Slots:</strong> ${data.availableSlots}</p>
-            <p><strong>Assets:</strong> ${data.assetCount}</p>
-            <p><strong>Subscription:</strong> ${data.subscription}</p>
-            <p><strong>Paid:</strong> ${data.paid ? "Yes" : "No"}</p>
-            ${
-              data.isOverLimit
-                ? '<p class="text-red-600"><strong>⚠️ Over Limit!</strong></p>'
-                : ""
-            }
-          </div>
-        `,
-        icon: data.isOverLimit ? "warning" : "info",
-        confirmButtonText: "Close",
-      });
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Organization not found");
-    },
-  });
-
-  const handleCheckOrganization = () => {
-    Swal.fire({
-      title: "Check Organization",
-      input: "text",
-      inputLabel: "Enter company name, email, or HR name",
-      inputPlaceholder: "e.g., mobin-web-agency",
-      showCancelButton: true,
-      confirmButtonText: "Check",
-      inputValidator: (value) => {
-        if (!value) {
-          return "Please enter an organization identifier!";
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        checkOrganizationMutation.mutate(result.value);
-      }
-    });
-  };
-
   // Fetch organizations with real-time updates
-  const {
-    data: organizations = [],
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["admin-organizations"],
+  const { data: organizations = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['admin-organizations'],
     queryFn: async () => {
-      const res = await axiosSecure.get("/organizations-for-admin");
+      const res = await axiosSecure.get('/organizations-for-admin');
       return res.data;
     },
     refetchInterval: 30000, // Refetch every 30 seconds
@@ -107,28 +24,23 @@ const AdminOrganizations = () => {
   // Filter organizations
   const filteredOrganizations = useMemo(() => {
     if (!Array.isArray(organizations)) return [];
+    
+    return organizations.filter(org => {
+      const matchesSearch = !searchTerm.trim() || [
+        org.companyName,
+        org.name,
+        org.email,
+        org.subscription
+      ].some(field => 
+        field && field.toString().toLowerCase().includes(searchTerm.toLowerCase().trim())
+      );
 
-    return organizations.filter((org) => {
-      const matchesSearch =
-        !searchTerm.trim() ||
-        [org.companyName, org.name, org.email, org.subscription].some(
-          (field) =>
-            field &&
-            field
-              .toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase().trim())
-        );
+      const matchesSubscription = subscriptionFilter === 'all' || 
+        (org.subscription || 'Basic').toLowerCase() === subscriptionFilter.toLowerCase();
 
-      const matchesSubscription =
-        subscriptionFilter === "all" ||
-        (org.subscription || "Basic").toLowerCase() ===
-          subscriptionFilter.toLowerCase();
-
-      const matchesPayment =
-        paymentFilter === "all" ||
-        (paymentFilter === "paid" && org.paid) ||
-        (paymentFilter === "free" && !org.paid);
+      const matchesPayment = paymentFilter === 'all' || 
+        (paymentFilter === 'paid' && org.paid) || 
+        (paymentFilter === 'free' && !org.paid);
 
       return matchesSearch && matchesSubscription && matchesPayment;
     });
@@ -140,10 +52,9 @@ const AdminOrganizations = () => {
 
   // Organization Card Component
   const OrganizationCard = ({ org }) => {
-    const usagePercentage = org.packageLimit
-      ? Math.min(((org.actualEmployees || 0) / org.packageLimit) * 100, 100)
-      : 0;
-
+    const usagePercentage = org.packageLimit ? 
+      Math.min((org.actualEmployees || 0) / org.packageLimit * 100, 100) : 0;
+    
     const isNearLimit = usagePercentage > 80;
     const isOverLimit = (org.actualEmployees || 0) > (org.packageLimit || 5);
 
@@ -159,49 +70,29 @@ const AdminOrganizations = () => {
                     src={org.companyLogo}
                     alt={org.companyName}
                     className="w-full h-full object-cover rounded-xl"
-                    onError={(e) => {
-                      e.target.src = `https://ui-avatars.com/api/?name=${org.companyName}&background=14C2ED&color=fff&size=56`;
-                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-bold text-lg rounded-xl">
-                    {org.companyName?.[0]?.toUpperCase() ||
-                      org.name?.[0]?.toUpperCase() ||
-                      "C"}
+                    {org.companyName?.[0]?.toUpperCase() || org.name?.[0]?.toUpperCase() || 'C'}
                   </div>
                 )}
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-lg text-base-content truncate">
-                {org.companyName || org.name}
-              </h3>
-              <p className="text-sm text-base-content/70 truncate">
-                {org.name}
-              </p>
-              <p className="text-xs text-base-content/60 truncate">
-                {org.email}
-              </p>
-
+              <h3 className="font-bold text-lg text-base-content truncate">{org.companyName || org.name}</h3>
+              <p className="text-sm text-base-content/70 truncate">{org.name}</p>
+              <p className="text-xs text-base-content/60 truncate">{org.email}</p>
+              
               {/* Status Badges */}
               <div className="flex gap-2 mt-2">
-                <span
-                  className={`badge badge-sm ${
-                    org.subscription === "Premium"
-                      ? "badge-primary"
-                      : org.subscription === "Standard"
-                      ? "badge-secondary"
-                      : "badge-neutral"
-                  }`}
-                >
-                  {org.subscription || "Basic"}
+                <span className={`badge badge-sm ${
+                  org.subscription === 'Premium' ? 'badge-primary' :
+                  org.subscription === 'Standard' ? 'badge-secondary' : 'badge-neutral'
+                }`}>
+                  {org.subscription || 'Basic'}
                 </span>
-                <span
-                  className={`badge badge-sm ${
-                    org.paid ? "badge-success" : "badge-warning"
-                  }`}
-                >
-                  {org.paid ? "Paid" : "Free"}
+                <span className={`badge badge-sm ${org.paid ? 'badge-success' : 'badge-warning'}`}>
+                  {org.paid ? 'Paid' : 'Free'}
                 </span>
                 {isOverLimit && (
                   <span className="badge badge-sm badge-error">Over Limit</span>
@@ -213,21 +104,15 @@ const AdminOrganizations = () => {
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="text-center p-2 bg-primary/10 rounded-lg">
-              <div className="text-lg font-bold text-primary">
-                {org.actualEmployees || 0}
-              </div>
+              <div className="text-lg font-bold text-primary">{org.actualEmployees || 0}</div>
               <div className="text-xs text-base-content/70">Employees</div>
             </div>
             <div className="text-center p-2 bg-secondary/10 rounded-lg">
-              <div className="text-lg font-bold text-secondary">
-                {org.assetCount || 0}
-              </div>
+              <div className="text-lg font-bold text-secondary">{org.assetCount || 0}</div>
               <div className="text-xs text-base-content/70">Assets</div>
             </div>
             <div className="text-center p-2 bg-accent/10 rounded-lg">
-              <div className="text-lg font-bold text-accent">
-                {org.packageLimit || 5}
-              </div>
+              <div className="text-lg font-bold text-accent">{org.packageLimit || 5}</div>
               <div className="text-xs text-base-content/70">Limit</div>
             </div>
           </div>
@@ -236,25 +121,21 @@ const AdminOrganizations = () => {
           <div className="mb-4">
             <div className="flex justify-between text-xs text-base-content/70 mb-1">
               <span>Employee Usage</span>
-              <span className={isOverLimit ? "text-error font-semibold" : ""}>
+              <span className={isOverLimit ? 'text-error font-semibold' : ''}>
                 {org.actualEmployees || 0}/{org.packageLimit || 5}
               </span>
             </div>
-            <progress
+            <progress 
               className={`progress w-full ${
-                isOverLimit
-                  ? "progress-error"
-                  : isNearLimit
-                  ? "progress-warning"
-                  : "progress-primary"
+                isOverLimit ? 'progress-error' : 
+                isNearLimit ? 'progress-warning' : 'progress-primary'
               }`}
-              value={Math.min(org.actualEmployees || 0, org.packageLimit || 5)}
+              value={Math.min(org.actualEmployees || 0, org.packageLimit || 5)} 
               max={org.packageLimit || 5}
             ></progress>
             {isOverLimit && (
               <p className="text-xs text-error mt-1">
-                Exceeds limit by{" "}
-                {(org.actualEmployees || 0) - (org.packageLimit || 5)} employees
+                Exceeds limit by {(org.actualEmployees || 0) - (org.packageLimit || 5)} employees
               </p>
             )}
           </div>
@@ -267,25 +148,15 @@ const AdminOrganizations = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-2">
-            <button
+            <button 
               onClick={() => handleViewDetails(org)}
               className="btn btn-sm btn-primary flex-1"
             >
               View Details
             </button>
             <button className="btn btn-sm btn-outline btn-secondary">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </button>
           </div>
@@ -300,9 +171,7 @@ const AdminOrganizations = () => {
         <div className="flex justify-center items-center min-h-64">
           <div className="text-center">
             <span className="loading loading-spinner loading-lg text-primary"></span>
-            <p className="mt-4 text-base-content/70">
-              Loading organizations...
-            </p>
+            <p className="mt-4 text-base-content/70">Loading organizations...</p>
           </div>
         </div>
       </div>
@@ -314,11 +183,9 @@ const AdminOrganizations = () => {
       <div className="container-responsive py-4 sm:py-6">
         <div className="text-center py-12">
           <div className="text-6xl mb-4">⚠️</div>
-          <h3 className="text-2xl font-bold text-error mb-2">
-            Error Loading Organizations
-          </h3>
+          <h3 className="text-2xl font-bold text-error mb-2">Error Loading Organizations</h3>
           <p className="text-base-content/50 mb-4">
-            {error.message || "Failed to load organizations. Please try again."}
+            {error.message || 'Failed to load organizations. Please try again.'}
           </p>
           <button className="btn btn-primary" onClick={() => refetch()}>
             Try Again
@@ -367,7 +234,7 @@ const AdminOrganizations = () => {
                 placeholder="Search by company, name, or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-input pr-10"
+                className="input pr-10"
               />
               {searchTerm && (
                 <button
@@ -400,7 +267,7 @@ const AdminOrganizations = () => {
               </span>
             </label>
             <select
-              className="form-select"
+              className="select"
               value={subscriptionFilter}
               onChange={(e) => setSubscriptionFilter(e.target.value)}
             >
@@ -417,7 +284,7 @@ const AdminOrganizations = () => {
               <span className="label-text font-medium">Filter by Payment</span>
             </label>
             <select
-              className="form-select"
+              className="select"
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value)}
             >
@@ -497,9 +364,6 @@ const AdminOrganizations = () => {
                         src={selectedOrgDetails.companyLogo}
                         alt={selectedOrgDetails.companyName}
                         className="w-full h-full object-cover rounded-xl"
-                        onError={(e) => {
-                          e.target.src = `https://ui-avatars.com/api/?name=${selectedOrgDetails.companyName}&background=14C2ED&color=fff&size=128`;
-                        }}
                       />
                     ) : (
                       <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-bold text-4xl rounded-xl">
@@ -517,7 +381,7 @@ const AdminOrganizations = () => {
                   <p className="text-base-content/70">
                     {selectedOrgDetails.name}
                   </p>
-                  <p className="text-sm text-base-content/60 break-words">
+                  <p className="text-sm text-base-content/60 wrap-break-words">
                     {selectedOrgDetails.email}
                   </p>
 
@@ -658,7 +522,7 @@ const AdminOrganizations = () => {
                     Account Information
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div>
+                    <div className="flex flex-row lg:flex-col justify-between items-center">
                       <span className="font-medium text-base-content/70">
                         Subscription Plan:
                       </span>
@@ -666,7 +530,7 @@ const AdminOrganizations = () => {
                         {selectedOrgDetails.subscription || "Basic"}
                       </p>
                     </div>
-                    <div>
+                    <div className="flex flex-row lg:flex-col justify-between items-center">
                       <span className="font-medium text-base-content/70">
                         Payment Status:
                       </span>
@@ -680,7 +544,7 @@ const AdminOrganizations = () => {
                         {selectedOrgDetails.paid ? "Paid" : "Free"}
                       </p>
                     </div>
-                    <div>
+                    <div className="flex flex-row lg:flex-col justify-between items-center">
                       <span className="font-medium text-base-content/70">
                         Employee Limit:
                       </span>
@@ -688,7 +552,7 @@ const AdminOrganizations = () => {
                         {selectedOrgDetails.packageLimit || 5}
                       </p>
                     </div>
-                    <div>
+                    <div className="flex flex-row lg:flex-col justify-between items-center">
                       <span className="font-medium text-base-content/70">
                         Registration Date:
                       </span>

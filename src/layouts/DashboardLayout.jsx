@@ -23,30 +23,38 @@ const DashboardLayout = () => {
   const { user, LogOut } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { role } = useRole();
+  const { role, roleLoading } = useRole();
+
   const { data: profile = {}, isLoading } = useQuery({
-    queryKey: ["my-profile", user?.email],
+    queryKey: ["my-profile", user?.email, role],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/${user.email}`);
-      return res.data;
+      if (role === "admin") {
+        // Fetch from admin collection
+        const res = await axiosSecure.get(`/admin/${user.email}`);
+        return res.data;
+      } else {
+        // Fetch from users collection
+        const res = await axiosSecure.get(`/users/${user.email}`);
+        return res.data;
+      }
     },
   });
-  
+
   const handleLogOut = () => {
     LogOut();
   };
-  
-  if (isLoading) {
+
+  if (isLoading || roleLoading) {
     return <Loading></Loading>;
   }
-  
+
   return (
-    <div className="drawer lg:drawer-open min-h-screen">
+    <div className="drawer lg:drawer-open min-h-screen print:h-auto print:overflow-visible">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">
+      <div className="drawer-content flex flex-col print:h-auto print:overflow-visible">
         {/* Mobile/Tablet Navbar */}
-        <nav className="navbar bg-base-300 lg:bg-base-100 shadow-sm px-2 sm:px-4">
+        <nav className="navbar bg-base-300 lg:bg-base-100 shadow-sm px-2 sm:px-4 print:hidden">
           <div className="flex-none lg:hidden">
             <label
               htmlFor="my-drawer-4"
@@ -77,26 +85,149 @@ const DashboardLayout = () => {
           </div>
 
           <div className="flex-none">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Link
-                to="/dashboard"
-                className="tooltip tooltip-bottom"
-                data-tip={`${profile.name} | Dashboard Home`}
-              >
-                {profile.companyLogo || profile.photo ? (
-                  <img
-                    src={profile.companyLogo || profile.photo}
-                    alt="User profile"
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-primary/30 object-cover profile-image hover:ring-primary/50 transition-all duration-200"
-                  />
-                ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold profile-image hover:bg-primary/30 transition-all duration-200 text-xs sm:text-sm">
-                    {profile?.name?.[0]?.toUpperCase() || "U"}
-                  </div>
-                )}
-              </Link>
-              <div className="hidden sm:block">
-                <ThemeToggle></ThemeToggle>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="hidden lg:block">
+                <ThemeToggle />
+              </div>
+
+              <div className="dropdown dropdown-end">
+                <button
+                  tabIndex={0}
+                  className="rounded-full hover:bg-primary-focus border-2 border-base-300 hover:border-primary w-12 h-12 p-0 overflow-hidden transition-all duration-200"
+                  aria-label="User menu"
+                >
+                  {profile?.image ||
+                  profile?.companyLogo ||
+                  profile?.photo ||
+                  user?.photoURL ? (
+                    <img
+                      src={
+                        profile?.image ||
+                        profile?.companyLogo ||
+                        profile?.photo ||
+                        user?.photoURL
+                      }
+                      alt="User profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.innerHTML = `<span class="text-lg font-bold">${(profile?.name ||
+                          user?.displayName ||
+                          user?.email ||
+                          "User")[0]?.toUpperCase()}</span>`;
+                      }}
+                    />
+                  ) : (
+                    <span className="text-lg font-bold">
+                      {(profile?.name ||
+                        user?.displayName ||
+                        user?.email ||
+                        "User")[0]?.toUpperCase()}
+                    </span>
+                  )}
+                </button>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg bg-base-100 rounded-box w-64 max-w-[90vw] border border-base-300"
+                >
+                  {/* Profile section */}
+                  <li className="menu-title">
+                    <span className="text-primary font-semibold">
+                      {profile?.name ||
+                        user?.displayName ||
+                        user?.email?.split("@")[0] ||
+                        "User"}
+                    </span>
+                  </li>
+                  <li>
+                    <Link
+                      to="/dashboard/my-profile"
+                      className="flex items-center gap-2"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      My Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/dashboard" className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+                        />
+                      </svg>
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/" className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
+                      </svg>
+                      Home
+                    </Link>
+                  </li>
+
+                  {/* Theme toggle for mobile */}
+                  <li className="lg:hidden border-t border-base-300 mt-2 pt-2">
+                    <div className="flex items-center justify-between p-2">
+                      <span>Theme</span>
+                      <ThemeToggle />
+                    </div>
+                  </li>
+
+                  {/* Logout */}
+                  <li className="border-t border-base-300 mt-2 pt-2">
+                    <button
+                      onClick={handleLogOut}
+                      className="flex items-center gap-2 text-error hover:bg-error/10"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Log out
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -111,7 +242,7 @@ const DashboardLayout = () => {
       </div>
 
       {/* Sidebar */}
-      <div className="drawer-side z-50">
+      <div className="drawer-side z-50 print:hidden">
         <label
           htmlFor="my-drawer-4"
           aria-label="close sidebar"
@@ -132,9 +263,16 @@ const DashboardLayout = () => {
           <ul className="menu w-full flex-1 p-2 text-base-content">
             {/* Dashboard Home */}
             <li>
-              <Link
+              <NavLink
                 to="/dashboard"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                end
+                className={({ isActive }) =>
+                  `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? "bg-primary text-white"
+                      : "hover:bg-primary hover:text-white"
+                  }`
+                }
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +288,7 @@ const DashboardLayout = () => {
                   <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 </svg>
                 <span className="text-sm font-medium">Dashboard Home</span>
-              </Link>
+              </NavLink>
             </li>
 
             {/* HR Menu Items */}
@@ -159,7 +297,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/asset-list"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <FaListOl className="w-5 h-5" />
                     <span className="text-sm font-medium">Asset List</span>
@@ -168,7 +312,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/add-asset"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <MdAssignmentAdd className="w-5 h-5" />
                     <span className="text-sm font-medium">Add Asset</span>
@@ -177,7 +327,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/all-requests"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <VscGitPullRequestNewChanges className="w-5 h-5" />
                     <span className="text-sm font-medium">All Requests</span>
@@ -186,7 +342,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/my-employees"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <FaUsers className="w-5 h-5" />
                     <span className="text-sm font-medium">My Employees</span>
@@ -195,7 +357,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/upgrade-package-hr"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <GiArmorUpgrade className="w-5 h-5" />
                     <span className="text-sm font-medium">Upgrade Package</span>
@@ -203,12 +371,71 @@ const DashboardLayout = () => {
                 </li>
               </>
             )}
+
+            {/* Employee Menu Items */}
+            {role === "employee" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard/my-assets"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
+                  >
+                    <AiFillProduct className="w-5 h-5" />
+                    <span className="text-sm font-medium">My Assets</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/request-asset"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
+                  >
+                    <VscRequestChanges className="w-5 h-5" />
+                    <span className="text-sm font-medium">Request Asset</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/my-team"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
+                  >
+                    <RiTeamLine className="w-5 h-5" />
+                    <span className="text-sm font-medium">My Team</span>
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* Admin Menu Items */}
             {role === "admin" && (
               <>
                 <li>
                   <NavLink
                     to="/dashboard/admin/assets"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <svg
                       className="w-5 h-5"
@@ -229,7 +456,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/admin/users"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <FaUsers className="w-5 h-5" />
                     <span className="text-sm font-medium">User List</span>
@@ -238,7 +471,13 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/admin/organizations"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary hover:text-white"
+                      }`
+                    }
                   >
                     <svg
                       className="w-5 h-5"
@@ -258,38 +497,6 @@ const DashboardLayout = () => {
                 </li>
               </>
             )}
-            {/* Employee Menu Items */}
-            {role === "employee" && (
-              <>
-                <li>
-                  <NavLink
-                    to="/dashboard/my-assets"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
-                  >
-                    <AiFillProduct className="w-5 h-5" />
-                    <span className="text-sm font-medium">My Assets</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/dashboard/request-asset"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
-                  >
-                    <VscRequestChanges className="w-5 h-5" />
-                    <span className="text-sm font-medium">Request Asset</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/dashboard/my-team"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
-                  >
-                    <RiTeamLine className="w-5 h-5" />
-                    <span className="text-sm font-medium">My Team</span>
-                  </NavLink>
-                </li>
-              </>
-            )}
 
             {/* Divider */}
             <div className="divider my-2"></div>
@@ -298,7 +505,13 @@ const DashboardLayout = () => {
             <li>
               <NavLink
                 to="/dashboard/my-profile"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? "bg-primary text-white"
+                      : "hover:bg-primary hover:text-white"
+                  }`
+                }
               >
                 <CgProfile className="w-5 h-5" />
                 <span className="text-sm font-medium">My Profile</span>

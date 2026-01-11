@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
@@ -10,52 +10,79 @@ const RequestAnAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
 
-  const limit = 10;
+  const itemsPerPage = 8;
 
+  // Fetch all assets once (without search parameters)
   const {
-    data = {},
+    data: allAssets = [],
     isLoading,
-
   } = useQuery({
-    queryKey: ["public-assets", searchQuery, currentPage],
+    queryKey: ["public-assets-all"],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/assets/public?searchText=${searchQuery}&limit=${limit}&skip=${
-          currentPage * limit
-        }`
-      );
-      return res.data;
+      const res = await axiosSecure.get(`/assets/public?limit=1000`); // Get all assets
+      return res.data.assets || [];
     },
-    keepPreviousData: true,
-    staleTime: 1000 * 5,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     refetchOnWindowFocus: false,
   });
 
-  const assets = data.assets || [];
-  const totalAssets = data.total || 0;
-  const totalPage = Math.ceil(totalAssets / limit);
+  // Client-side filtering and pagination
+  const { filteredAssets, totalPages, paginatedAssets } = useMemo(() => {
+    // Filter assets based on search text
+    let filtered = allAssets;
+    
+    if (searchText.trim()) {
+      const searchLower = searchText.toLowerCase().trim();
+      filtered = allAssets.filter(asset => 
+        asset.productName?.toLowerCase().includes(searchLower) ||
+        asset.companyName?.toLowerCase().includes(searchLower) ||
+        asset.productType?.toLowerCase().includes(searchLower) ||
+        asset.brand?.toLowerCase().includes(searchLower) ||
+        asset.model?.toLowerCase().includes(searchLower) ||
+        asset.category?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Calculate pagination
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const startIndex = currentPage * itemsPerPage;
+    const paginatedAssets = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+    return {
+      filteredAssets: filtered,
+      totalPages,
+      paginatedAssets
+    };
+  }, [allAssets, searchText, currentPage]);
+
+  // Reset to first page when search changes
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchText]);
 
   const handleConfirmRequest = async () => {
     setIsSubmitting(true);
-    const res = await axiosSecure.post("/asset-requests", {
-      assetId: selectedAsset._id,
-    });
+    try {
+      const res = await axiosSecure.post("/asset-requests", {
+        assetId: selectedAsset._id,
+      });
 
-    if (res.data.success) {
-      toast.success("Asset request sent successfully");
-      document.getElementById("request_modal").close();
-      setSelectedAsset(null);
+      if (res.data.success) {
+        toast.success("Asset request sent successfully");
+        document.getElementById("request_modal").close();
+        setSelectedAsset(null);
+      }
+    } catch (error) {
+      toast.error("Failed to send request. Please try again.");
     }
-
     setIsSubmitting(false);
   };
-  const handleSearch = () => {
+
+  const clearSearch = () => {
+    setSearchText("");
     setCurrentPage(0);
-    setSearchQuery(searchText.trim());
   };
 
   if (isLoading) return <Loading />;
@@ -66,38 +93,80 @@ const RequestAnAsset = () => {
         <title>RequestAsset</title>
       </Helmet>
       <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-6">
-        Request an Asset from Any Companye
+        Request an Asset from Any Company
       </h2>
 
-      {/* Search */}
-      <div className="flex justify-center  mb-6">
-        <div className="flex gap-2 w-full max-w-sm relative">
-          <input
-            type="text"
-            className="input input-bordered flex-1"
-            placeholder="Search asset"
-            value={searchText}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <button
-            onClick={handleSearch}
-            className="btn btn-primary absolute right-0 z-50"
-          >
-            Search
-          </button>
+      {/* Enhanced Search */}
+      <div className="flex justify-center mb-6">
+        <div className="w-full max-w-md">
+          <div className="relative">
+            <input
+              type="text"
+              className="input input-bordered w-full pr-20"
+              placeholder="Search by name, company, type, brand..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            
+            {/* Clear button */}
+            {searchText && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-12 top-1/2 transform -translate-y-1/2 text-base-content/50 hover:text-base-content"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+            
+            {/* Search icon */}
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <svg className="w-4 h-4 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+          
+          {/* Search results info */}
+          {searchText && (
+            <p className="text-sm text-base-content/60 mt-2 text-center">
+              {filteredAssets.length === 0 
+                ? `No results found for "${searchText}"`
+                : `Found ${filteredAssets.length} asset${filteredAssets.length !== 1 ? 's' : ''} for "${searchText}"`
+              }
+            </p>
+          )}
         </div>
       </div>
 
-      {assets.length === 0 && (
-        <p className="text-center text-base-content/60 mt-10">
-          No assets found.
-        </p>
+      {/* Empty State */}
+      {paginatedAssets.length === 0 && !isLoading && (
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">📦</div>
+          <h3 className="text-xl font-bold text-base-content/70 mb-2">
+            {searchText ? 'No Assets Found' : 'No Assets Available'}
+          </h3>
+          <p className="text-base-content/50">
+            {searchText 
+              ? `Try adjusting your search terms or browse all available assets`
+              : 'No assets are currently available for request'
+            }
+          </p>
+          {searchText && (
+            <button 
+              onClick={clearSearch}
+              className="btn btn-outline btn-primary btn-sm mt-4"
+            >
+              Clear Search
+            </button>
+          )}
+        </div>
       )}
- 
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        {assets.map((product) => (
+      {/* Asset Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {paginatedAssets.map((product) => (
           <div
             key={product._id}
             className="card bg-base-200 rounded-xl hover:shadow-xl shadow-neutral transition"
@@ -106,7 +175,7 @@ const RequestAnAsset = () => {
               <img
                 src={product.productImage}
                 alt={product.productName}
-                className="rounded-xl h-60 w-full"
+                className="rounded-xl h-60 w-full object-cover"
               />
             </figure>
 
@@ -115,17 +184,21 @@ const RequestAnAsset = () => {
                 {product.productName}
               </h3>
 
-              <div className="flex justify-between text-sm mt-3">
-                <p className="text-start">
-                  Type:{" "}
-                  <span className="font-semibold">{product.productType}</span>
-                </p>
-                <p className="text-end">
-                  Available:{" "}
-                  <span className="font-semibold">
+              <div className="flex justify-between items-center text-sm mt-3">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-base-content/70">Type:</span>
+                  <span className={`badge badge-xs ${
+                    product.productType === "Returnable" ? "badge-success" : "badge-info"
+                  }`}>
+                    {product.productType === "Returnable" ? "Returnable" : "Non-returnable"}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1 text-right">
+                  <span className="text-xs text-base-content/70">Available:</span>
+                  <span className="font-semibold text-primary">
                     {product.productQuantity}
                   </span>
-                </p>
+                </div>
               </div>
 
               <button
@@ -143,37 +216,40 @@ const RequestAnAsset = () => {
         ))}
       </div>
 
-      <div className="flex justify-center gap-2 mt-10 flex-wrap">
-        {currentPage > 0 && (
-          <button
-            onClick={() => setCurrentPage((p) => p - 1)}
-            className="btn btn-sm"
-          >
-            Prev
-          </button>
-        )}
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-10 flex-wrap">
+          {currentPage > 0 && (
+            <button
+              onClick={() => setCurrentPage((p) => p - 1)}
+              className="btn btn-sm"
+            >
+              Prev
+            </button>
+          )}
 
-        {[...Array(totalPage).keys()].map((page) => (
-          <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`btn btn-sm ${
-              page === currentPage ? "btn-primary" : "btn-outline"
-            }`}
-          >
-            {page + 1}
-          </button>
-        ))}
+          {[...Array(totalPages).keys()].map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`btn btn-sm ${
+                page === currentPage ? "btn-primary" : "btn-outline"
+              }`}
+            >
+              {page + 1}
+            </button>
+          ))}
 
-        {currentPage < totalPage - 1 && (
-          <button
-            onClick={() => setCurrentPage((p) => p + 1)}
-            className="btn btn-sm"
-          >
-            Next
-          </button>
-        )}
-      </div>
+          {currentPage < totalPages - 1 && (
+            <button
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className="btn btn-sm"
+            >
+              Next
+            </button>
+          )}
+        </div>
+      )}
 
       <dialog id="request_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box max-w-md">

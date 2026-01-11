@@ -19,21 +19,8 @@ const MonthlyTrendsChart = () => {
   const { data: trendsData = [], isLoading } = useQuery({
     queryKey: ["monthly-trends"],
     queryFn: async () => {
-      try {
-        const res = await axiosSecure.get("/analytics/monthly-trends");
-        return res.data;
-      } catch (error) {
-        console.error("Error fetching monthly trends:", error);
-        // Mock data for demonstration
-        return [
-          { month: "Jan", requests: 45, approvals: 38, assets: 120 },
-          { month: "Feb", requests: 52, approvals: 45, assets: 125 },
-          { month: "Mar", requests: 48, approvals: 42, assets: 130 },
-          { month: "Apr", requests: 61, approvals: 55, assets: 135 },
-          { month: "May", requests: 55, approvals: 48, assets: 140 },
-          { month: "Jun", requests: 67, approvals: 59, assets: 145 }
-        ];
-      }
+      const res = await axiosSecure.get("/analytics/monthly-trends");
+      return res.data;
     },
   });
 

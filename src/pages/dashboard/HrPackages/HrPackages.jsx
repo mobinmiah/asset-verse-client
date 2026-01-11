@@ -2,17 +2,30 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../components/Loading/Loading";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
 
 const HrPackages = () => {
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
   // Fetch packages from backend
   const { data: packages = [], isLoading } = useQuery({
     queryKey: ["packages"],
     queryFn: async () => {
       const res = await axiosSecure.get("/packages/hr");
+      // Sort packages by price (low to high)
+      return res.data.sort((a, b) => a.price - b.price);
+    },
+  });
+
+  // Fetch current user profile to get current subscription
+  const { data: profile = {}, isLoading: profileLoading } = useQuery({
+    queryKey: ["my-profile", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/${user.email}`);
       return res.data;
     },
   });
@@ -20,11 +33,18 @@ const HrPackages = () => {
   // Subscribe / payment handler
   const handleSubscribe = async (plan) => {
     try {
+      // Check if user is already on this plan
+      if (profile.subscription?.toLowerCase() === plan.name.toLowerCase()) {
+        Swal.fire({
+          title: "Already Subscribed",
+          text: `You are already on the ${plan.name} plan.`,
+          icon: "info",
+          confirmButtonColor: "#14C2ED",
+        });
+        return;
+      }
       
-      // Optional: check if user is already on this plan (you can get current plan from user context)
       const res = await axiosSecure.post("/checkout-session", plan);
-
-      // Redirect to Stripe checkout
       window.location.assign(res.data.url);
     } catch (error) {
       console.error(error);
@@ -32,7 +52,12 @@ const HrPackages = () => {
     }
   };
 
-  if (isLoading) {
+  // Helper function to check if this is the current plan
+  const isCurrentPlan = (planName) => {
+    return profile.subscription?.toLowerCase() === planName.toLowerCase();
+  };
+
+  if (isLoading || profileLoading) {
     return <Loading />;
   }
 
@@ -65,7 +90,14 @@ const HrPackages = () => {
                   {/* Header */}
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-xl font-bold">{plan.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-bold">{plan.name}</h3>
+                        {isCurrentPlan(plan.name) && (
+                          <span className="badge badge-primary badge-sm">
+                            Current
+                          </span>
+                        )}
+                      </div>
                       <p
                         className={`text-sm font-medium mt-1 ${
                           plan.employeeLimit <= 5
@@ -110,9 +142,10 @@ const HrPackages = () => {
                   <div className="mt-6">
                     <button
                       onClick={() => handleSubscribe(plan)}
-                      className="btn btn-primary"
+                      className={`btn ${isCurrentPlan(plan.name) ? 'btn-success' : 'btn-primary'}`}
+                      disabled={isCurrentPlan(plan.name)}
                     >
-                      Subscribe
+                      {isCurrentPlan(plan.name) ? 'Current Plan' : 'Subscribe'}
                     </button>
                   </div>
                 </div>

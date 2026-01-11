@@ -1,53 +1,36 @@
 # AssetVerse
 
-A full-stack MERN web application built to solve real-world problems using modern technologies.
-
----
+**Purpose:** Corporate Asset Management System  
 
 **Live URL:** [(https://asset-verse-of-mobin.netlify.app)]
 
 ---
 
-## 🧾 Project Overview
-This project is a modern web application developed using the MERN stack.  
-It focuses on performance, scalability, clean UI, and a smooth user experience.
+## Key Features
+
+- **HR Dashboard**: View and manage company assets and employees.  
+- **Asset Management**:
+  - Add, edit, and delete assets
+  - Upload product images via ImgBB
+  - Track asset type, quantity, and company affiliation
+- **Employee Management**:
+  - View employees with photo, name, email, join date, and assets count
+  - Remove employees from team with confirmation
+- **Search Functionality**: Search assets and employees
+- **Responsive UI**: Built with TailwindCSS and DaisyUI
+- **Interactive Dialogs**: SweetAlert2 for confirmations and notifications
+- **React Query**: Handles data fetching and caching
 
 ---
 
+## NPM Packages Used
 
-## 🧰 Technologies Used
-**Frontend:** React, Tailwind CSS, DaisyUI
-**Backend:** Node.js, Express.js  
-**Database:** MongoDB  
-**Authentication:** Firebase  
-**Tools:** Git, GitHub, VS Code  
-
----
-
-## ✨ Core Features
-- Secure user authentication  
-- Role-based access control  
-- Fully responsive design  
-- Dynamic data handling  
-- Clean & modern UI  
-- Optimized backend APIs  
-
----
-
-## 📦 Dependencies
-- React  
-- Express  
-- Mongoose  
-- Firebase  
-- JWT  
-- Tailwind CSS  
-- Axios  
-
----
-
-## 🛠 How to Run Locally
-
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
-cd REPO_NAME
+- `react` – Core React libraries  
+- `react-router` – Frontend routing  
+- `react-hook-form` – Form management  
+- `@tanstack/react-query` – Data fetching and caching  
+- `axios` – HTTP requests  
+- `sweetalert2` – Alert and confirmation dialogs  
+- `tailwindcss` & `daisyui` – Styling and UI components  
+- `react-helmet` – Dynamic page titles  
+- `vite` – Build tool

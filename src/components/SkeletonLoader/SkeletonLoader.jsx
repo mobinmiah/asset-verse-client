@@ -49,30 +49,37 @@ export const CardSkeleton = () => (
 );
 
 export const TableSkeleton = ({ rows = 5, columns = 4 }) => (
-  <div className="overflow-x-auto">
-    <table className="table w-full">
-      <thead>
-        <tr>
-          {Array.from({ length: columns }, (_, i) => (
-            <th key={i}>
-              <SkeletonLoader width="80%" height="16px" />
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {Array.from({ length: rows }, (_, rowIndex) => (
-          <tr key={rowIndex}>
-            {Array.from({ length: columns }, (_, colIndex) => (
-              <td key={colIndex}>
-                <SkeletonLoader width="90%" height="14px" />
-              </td>
+  <>
+    <div className="md:hidden space-y-4">
+      {Array.from({ length: rows }, (_, i) => (
+        <CardSkeleton key={i} />
+      ))}
+    </div>
+    <div className="hidden md:block overflow-x-auto">
+      <table className="table w-full">
+        <thead>
+          <tr>
+            {Array.from({ length: columns }, (_, i) => (
+              <th key={i}>
+                <SkeletonLoader width="80%" height="16px" />
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {Array.from({ length: rows }, (_, rowIndex) => (
+            <tr key={rowIndex}>
+              {Array.from({ length: columns }, (_, colIndex) => (
+                <td key={colIndex}>
+                  <SkeletonLoader width="90%" height="14px" />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>
 );
 
 export const DashboardSkeleton = () => (

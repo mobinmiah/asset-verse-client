@@ -17,21 +17,9 @@ const TopRequestedAssetsChart = () => {
   const { data: requestedAssets = [], isLoading, error } = useQuery({
     queryKey: ["top-requested-assets"],
     queryFn: async () => {
-      try {
-        const res = await axiosSecure.get("/analytics/top-requested-assets");
-        console.log("Top requested assets data:", res.data);
-        return res.data;
-      } catch (error) {
-        console.error("Error fetching top requested assets:", error);
-        // Return mock data if API fails
-        return [
-          { name: "Laptop", requests: 25 },
-          { name: "Monitor", requests: 18 },
-          { name: "Mouse", requests: 15 },
-          { name: "Keyboard", requests: 12 },
-          { name: "Headphones", requests: 8 }
-        ];
-      }
+      const res = await axiosSecure.get("/analytics/top-requested-assets");
+      console.log("Top requested assets data:", res.data);
+      return res.data;
     },
   });
 

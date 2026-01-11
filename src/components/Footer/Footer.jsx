@@ -4,7 +4,7 @@ import { FaFacebookF, FaXTwitter, FaYoutube } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className="bg-base-100 shadow-sm rounded-lg mt-8 sm:mt-12 lg:mt-16">
+    <footer className="bg-base-100 shadow-sm rounded-lg mt-8 sm:mt-12 lg:mt-16 print:hidden">
       <div className="footer footer-center p-4 sm:p-6 lg:p-10 text-base-content">
         <aside className="text-center">
           <div className="mb-4">
