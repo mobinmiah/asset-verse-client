@@ -70,6 +70,17 @@ const Login = () => {
 
       localStorage.setItem("access-token", res.data.token);
 
+      const userInfo = {
+        name: result.user.displayName || "User",
+        email: result.user.email,
+        photo: result.user.photoURL || "",
+        role: "employee",
+        createdAt: new Date(),
+        status: "active",
+      };
+
+      await axios.post("/users", userInfo);
+
       navigate(location?.state || "/dashboard");
     } catch (err) {
       console.error(err);

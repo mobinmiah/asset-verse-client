@@ -193,9 +193,9 @@ const RequestAnAsset = () => {
                   </span>
                 </div>
                 <div className="flex flex-col gap-1 text-right">
-                  <span className="text-xs text-base-content/70">Available:</span>
+                  <span className="text-xs text-base-content/70">Company:</span>
                   <span className="font-semibold text-primary">
-                    {product.productQuantity}
+                    {product.companyName}
                   </span>
                 </div>
               </div>
