@@ -273,7 +273,7 @@ const AdminUsers = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">Total Users</div>
           <div className="stat-value text-2xl text-primary">
             {searchTerm
@@ -284,7 +284,7 @@ const AdminUsers = () => {
             {searchTerm ? "Filtered results" : "Real-time count"}
           </div>
         </div>
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">HR Managers</div>
           <div className="stat-value text-2xl text-secondary">
             {filteredUsers.hr.length}
@@ -293,7 +293,7 @@ const AdminUsers = () => {
             {searchTerm ? "In search results" : "Organization managers"}
           </div>
         </div>
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">Employees</div>
           <div className="stat-value text-2xl text-accent">
             {filteredUsers.employee.length}

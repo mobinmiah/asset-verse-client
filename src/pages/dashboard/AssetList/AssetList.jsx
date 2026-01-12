@@ -39,7 +39,6 @@ const AssetList = () => {
   const openEditModal = (asset, preservedData = null) => {
     setSelectedAsset(asset);
 
-    // Use preserved data if available (when reopening after cancel), otherwise use asset data
     const dataToUse = preservedData || {
       productName: asset.productName || "",
       productImage: asset.productImage || "",
@@ -101,13 +100,11 @@ const AssetList = () => {
     });
 
     if (!result.isConfirmed) {
-      // If cancelled, reopen the modal with the preserved form data
       openEditModal(selectedAsset, formData);
       return;
     }
 
     try {
-      // Prepare update data with all fields
       const updateData = {
         productName: data.productName,
         productImage: data.productImage,
@@ -201,16 +198,12 @@ const AssetList = () => {
       header: "Asset",
       accessor: "productName",
       render: (item) => (
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col lg:flex-row items-center gap-3">
           <div className="avatar">
-            <div className="mask mask-squircle w-12 h-12">
+            <div className="w-full lg:mask lg:mask-squircle lg:w-12 md:h-12">
               <img
                 src={item.productImage}
                 alt={item.productName}
-                onError={(e) => {
-                  e.target.src =
-                    "https://via.placeholder.com/48x48?text=No+Image";
-                }}
               />
             </div>
           </div>
@@ -304,32 +297,7 @@ const AssetList = () => {
         </div>
       ),
     },
-    {
-      header: "Status",
-      accessor: "status",
-      render: (item) => (
-        <div className="text-sm space-y-1">
-          <div>
-            <span
-              className={`badge badge-sm ${
-                item.status === "Available"
-                  ? "badge-success"
-                  : item.status === "Assigned"
-                  ? "badge-warning"
-                  : "badge-error"
-              }`}
-            >
-              {item.status || "Available"}
-            </span>
-          </div>
-          {item.assignedTo && (
-            <div className="text-xs text-base-content/70">
-              👤 {item.assignedEmployeeName || item.assignedTo}
-            </div>
-          )}
-        </div>
-      ),
-    },
+
     {
       header: "Date Added",
       accessor: "createdAt",
@@ -352,7 +320,7 @@ const AssetList = () => {
         <div className="flex flex-col sm:flex-row gap-2 items-stretch">
           <button
             onClick={() => openDetailsModal(item)}
-            className="btn btn-xs btn-primary w-full sm:w-auto"
+            className="btn btn-primary w-full sm:w-auto"
             title="View Asset Details"
           >
             <svg
@@ -378,7 +346,7 @@ const AssetList = () => {
           </button>
           <button
             onClick={() => openEditModal(item)}
-            className="btn btn-xs btn-info w-full sm:w-auto"
+            className="btn btn-info w-full sm:w-auto"
             title="Edit Asset"
           >
             <svg
@@ -398,7 +366,7 @@ const AssetList = () => {
           </button>
           <button
             onClick={() => handleDeleteAsset(item._id)}
-            className="btn btn-xs btn-error w-full sm:w-auto"
+            className="btn btn-error w-full sm:w-auto"
             title="Delete Asset"
           >
             <svg
@@ -444,25 +412,25 @@ const AssetList = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 auto-rows-fr">
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Total Assets</div>
             <div className="stat-value text-lg sm:text-2xl text-primary">
               {assets.length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">In Stock</div>
             <div className="stat-value text-lg sm:text-2xl text-success">
               {assets.filter((asset) => asset.productQuantity > 0).length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Out of Stock</div>
             <div className="stat-value text-lg sm:text-2xl text-error">
               {assets.filter((asset) => asset.productQuantity === 0).length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 h-full flex flex-col justify-between shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Returnable</div>
             <div className="stat-value text-lg sm:text-2xl text-info">
               {

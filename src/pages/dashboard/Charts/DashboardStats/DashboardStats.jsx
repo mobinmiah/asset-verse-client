@@ -81,7 +81,6 @@ const DashboardStats = () => {
 
   return (
     <div className="w-full">
-      {/* Mobile: 1 column, Tablet: 2 columns, Desktop: 3 columns */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
         {statsToShow.map((stat, index) => (
           <div key={index} className="w-full">

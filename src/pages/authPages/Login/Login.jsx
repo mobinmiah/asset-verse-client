@@ -86,12 +86,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center px-4 py-10 bg-gradient-to-br from-primary/5 to-secondary/5">
+    <div className="min-h-screen flex justify-center items-center px-4 py-10 bg-linear-to-br from-primary/5 to-secondary/5">
       <Helmet>
         <title>Login - AssetVerse | Access Your Dashboard</title>
-        <meta name="description" content="Login to your AssetVerse account to manage your organization's assets efficiently." />
+        <meta
+          name="description"
+          content="Login to your AssetVerse account to manage your organization's assets efficiently."
+        />
       </Helmet>
-      
+
       <div className="card bg-base-100 w-full max-w-sm sm:max-w-md shadow-xl border border-base-300 rounded-2xl p-6 sm:p-8">
         {/* Header */}
         <div className="text-center mb-6">
@@ -105,18 +108,13 @@ const Login = () => {
 
         {/* Demo Credentials */}
         <div className="bg-info/10 border border-info/20 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-info text-sm mb-2">🎯 Demo Accounts</h3>
+          <h3 className="font-semibold text-info text-sm mb-2">
+            🎯 Demo Accounts
+          </h3>
           <div className="space-y-2">
             <button
               type="button"
-              onClick={() => fillDemoCredentials('hr')}
-              className="btn btn-outline btn-info btn-xs w-full"
-            >
-              Demo HR Account
-            </button>
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('employee')}
+              onClick={() => fillDemoCredentials("employee")}
               className="btn btn-outline btn-info btn-xs w-full"
             >
               Demo Employee Account
@@ -135,11 +133,13 @@ const Login = () => {
                 required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Please enter a valid email address"
-                }
+                  message: "Please enter a valid email address",
+                },
               })}
               type="email"
-              className={`input input-bordered w-full focus:input-primary ${errors.email ? 'input-error' : ''}`}
+              className={`input input-bordered w-full focus:input-primary ${
+                errors.email ? "input-error" : ""
+              }`}
               placeholder="Enter your email address"
               disabled={isLoading}
             />
@@ -159,11 +159,13 @@ const Login = () => {
                   required: "Password is required",
                   minLength: {
                     value: 6,
-                    message: "Password must be at least 6 characters"
-                  }
+                    message: "Password must be at least 6 characters",
+                  },
                 })}
                 type={passType ? "text" : "password"}
-                className={`input input-bordered w-full pr-12 focus:input-primary ${errors.password ? 'input-error' : ''}`}
+                className={`input input-bordered w-full pr-12 focus:input-primary ${
+                  errors.password ? "input-error" : ""
+                }`}
                 placeholder="Enter your password"
                 disabled={isLoading}
               />
@@ -177,13 +179,18 @@ const Login = () => {
               </button>
             </div>
             {errors.password && (
-              <p className="text-error text-sm mt-1">{errors.password.message}</p>
+              <p className="text-error text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           {/* Forgot Password */}
           <div className="text-right">
-            <Link to="/forgot-password" className="link link-primary text-sm hover:link-hover">
+            <Link
+              to="/forgot-password"
+              className="link link-primary text-sm hover:link-hover"
+            >
               Forgot password?
             </Link>
           </div>
@@ -200,14 +207,14 @@ const Login = () => {
                 Signing in...
               </>
             ) : (
-              'Sign In'
+              "Sign In"
             )}
           </button>
         </form>
 
         {/* Social Login */}
         <div className="divider text-xs text-base-content/50">OR</div>
-        
+
         <button
           onClick={handleGoogleLogin}
           disabled={isLoading}
@@ -219,19 +226,17 @@ const Login = () => {
 
         {/* Register Links */}
         <div className="text-center mt-6 space-y-2">
-          <p className="text-sm text-base-content/70">
-            Don't have an account?
-          </p>
+          <p className="text-sm text-base-content/70">Don't have an account?</p>
           <div className="flex flex-col sm:flex-row gap-2">
-            <Link 
-              to="/register-hr" 
+            <Link
+              to="/register-hr"
               className="link text-primary font-medium text-sm hover:link-hover"
             >
               Register as HR Manager
             </Link>
             <span className="hidden sm:inline text-base-content/50">•</span>
-            <Link 
-              to="/register-employee" 
+            <Link
+              to="/register-employee"
               className="link text-secondary font-medium text-sm hover:link-hover"
             >
               Register as Employee
@@ -243,8 +248,13 @@ const Login = () => {
         <div className="mt-6 p-3 bg-base-200 rounded-lg">
           <p className="text-xs text-base-content/60 text-center">
             By signing in, you agree to our{" "}
-            <Link to="/help" className="link">Terms of Service</Link> and{" "}
-            <Link to="/help" className="link">Privacy Policy</Link>
+            <Link to="/help" className="link">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link to="/help" className="link">
+              Privacy Policy
+            </Link>
           </p>
         </div>
       </div>

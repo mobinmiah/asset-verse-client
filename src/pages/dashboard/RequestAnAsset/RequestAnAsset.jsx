@@ -14,23 +14,22 @@ const RequestAnAsset = () => {
 
   const itemsPerPage = 8;
 
-  // Fetch all assets once (without search parameters)
+  // Fetch all assets
   const {
     data: allAssets = [],
     isLoading,
   } = useQuery({
     queryKey: ["public-assets-all"],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/assets/public?limit=1000`); // Get all assets
+      const res = await axiosSecure.get(`/assets/public?limit=1000`);
       return res.data.assets || [];
     },
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
 
-  // Client-side filtering and pagination
   const { filteredAssets, totalPages, paginatedAssets } = useMemo(() => {
-    // Filter assets based on search text
+
     let filtered = allAssets;
     
     if (searchText.trim()) {
@@ -169,7 +168,7 @@ const RequestAnAsset = () => {
         {paginatedAssets.map((product) => (
           <div
             key={product._id}
-            className="card bg-base-200 rounded-xl hover:shadow-xl shadow-neutral transition"
+            className="card bg-base-200 rounded-xl hover:shadow-lg shadow-neutral transition"
           >
             <figure className="px-3 pt-3">
               <img

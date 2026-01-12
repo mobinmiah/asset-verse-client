@@ -442,25 +442,25 @@ const AllRequests = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Pending</div>
             <div className="stat-value text-lg sm:text-2xl text-warning">
               {requests.filter((r) => r.status === "pending").length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Approved</div>
             <div className="stat-value text-lg sm:text-2xl text-success">
               {requests.filter((r) => r.status === "approved").length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Rejected</div>
             <div className="stat-value text-lg sm:text-2xl text-error">
               {requests.filter((r) => r.status === "rejected").length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4">
+          <div className="stat bg-base-200 rounded-lg p-3 sm:p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-xs sm:text-sm">Returned</div>
             <div className="stat-value text-lg sm:text-2xl text-info">
               {requests.filter((r) => r.status === "returned").length}
@@ -502,9 +502,7 @@ const AllRequests = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between font-semibold">
                     <span>Asset</span>
-                    <span className="truncate max-w-30">
-                      {r.productName}
-                    </span>
+                    <span className="truncate max-w-30">{r.productName}</span>
                   </div>
 
                   <div className="flex justify-between items-center">
@@ -551,16 +549,12 @@ const AllRequests = () => {
 
                   <div className="flex justify-between font-semibold">
                     <span>Employee</span>
-                    <span className="truncate max-w-30">
-                      {r.employeeName}
-                    </span>
+                    <span className="truncate max-w-30">{r.employeeName}</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span>Email</span>
-                    <span className="truncate max-w-30">
-                      {r.employeeEmail}
-                    </span>
+                    <span className="truncate max-w-30">{r.employeeEmail}</span>
                   </div>
                 </div>
 

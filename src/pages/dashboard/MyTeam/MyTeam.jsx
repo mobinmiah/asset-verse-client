@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -11,7 +11,6 @@ const MyTeam = () => {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch companies the employee is affiliated with
   const { data: companies = [], isLoading: companiesLoading } = useQuery({
     queryKey: ["myCompanies"],
     queryFn: async () => {
@@ -51,7 +50,7 @@ const MyTeam = () => {
   const selectedCompanyInfo = companies.find(c => c.hrEmail === selectedCompany);
 
   // Auto-select first company if only one exists
-  React.useEffect(() => {
+useEffect(() => {
     if (companies.length === 1 && !selectedCompany) {
       setSelectedCompany(companies[0].hrEmail);
     }

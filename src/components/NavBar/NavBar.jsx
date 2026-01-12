@@ -21,15 +21,10 @@ const Navbar = () => {
     },
   });
 
-  // Get profile image with better fallback logic
   const profileImage = profile?.image || profile.companyLogo || profile.photo || user?.photoURL;
-  
-  // Get display name with better fallback logic
   const displayName = profile?.name || user?.displayName || user?.email?.split('@')[0] || "User";
 
-  // Navigation links based on authentication and role
   const getNavLinks = () => {
-    // For logged out users - only show basic pages
     if (!user) {
       return [
         { to: "/", label: "Home" },
@@ -39,7 +34,6 @@ const Navbar = () => {
       ];
     }
 
-    // Base links for all authenticated users
     const baseLinks = [
       { to: "/", label: "Home" },
       { to: "/about", label: "About" },
@@ -161,10 +155,6 @@ const Navbar = () => {
                         src={profileImage}
                         alt="User profile"
                         className="w-full h-full object-cover rounded-full"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.parentElement.innerHTML = `<div class="w-full h-full bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg">${displayName[0]?.toUpperCase()}</div>`;
-                        }}
                       />
                     ) : (
                       <div className="w-full h-full bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg">
@@ -176,7 +166,7 @@ const Navbar = () => {
                 
                 <ul
                   tabIndex={0}
-                  className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg bg-base-100 rounded-box w-72 max-w-[90vw] border border-base-300 z-[1000]"
+                  className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg bg-base-100 rounded-box w-72 max-w-[90vw] border border-base-300 z-1000"
                 >
                   {/* Mobile Navigation Links */}
                   <div className="lg:hidden mb-3">
@@ -287,7 +277,7 @@ const Navbar = () => {
                   </button>
                   <ul 
                     tabIndex={0} 
-                    className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-300 mt-2 z-[1000]"
+                    className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-300 mt-2 z-1000"
                   >
                     <li>
                       <Link 

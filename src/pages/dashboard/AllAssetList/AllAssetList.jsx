@@ -1,20 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { Helmet } from 'react-helmet';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import React, { useState, useMemo } from "react";
+import { Helmet } from "react-helmet";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AllAssetList = () => {
   const axiosSecure = useAxiosSecure();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   // Fetch all assets across all organizations
   const { data: assetsData = {}, isLoading } = useQuery({
-    queryKey: ['admin-all-assets'],
+    queryKey: ["admin-all-assets"],
     queryFn: async () => {
-      const res = await axiosSecure.get('/assets');
+      const res = await axiosSecure.get("/assets");
       return res.data;
     },
   });
@@ -22,19 +22,21 @@ const AllAssetList = () => {
   // Filter assets
   const filteredAssets = useMemo(() => {
     if (!assetsData.assets) return [];
-    
-    return assetsData.assets.filter(asset => {
-      const matchesSearch = 
+
+    return assetsData.assets.filter((asset) => {
+      const matchesSearch =
         asset.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         asset.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         asset.hrEmail?.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = statusFilter === 'all' || 
-        (statusFilter === 'available' && asset.productQuantity > 0) ||
-        (statusFilter === 'unavailable' && asset.productQuantity === 0);
-      
-      const matchesType = typeFilter === 'all' || asset.productType === typeFilter;
-      
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "available" && asset.productQuantity > 0) ||
+        (statusFilter === "unavailable" && asset.productQuantity === 0);
+
+      const matchesType =
+        typeFilter === "all" || asset.productType === typeFilter;
+
       return matchesSearch && matchesStatus && matchesType;
     });
   }, [assetsData.assets, searchTerm, statusFilter, typeFilter]);
@@ -204,20 +206,20 @@ const AllAssetList = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">Total Assets</div>
           <div className="stat-value text-2xl text-primary">
             {assetsData.total || 0}
           </div>
         </div>
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">Returnable</div>
           <div className="stat-value text-2xl text-success">
             {assetsData.assets?.filter((a) => a.productType === "Returnable")
               .length || 0}
           </div>
         </div>
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">Non-returnable</div>
           <div className="stat-value text-2xl text-info">
             {assetsData.assets?.filter(
@@ -225,7 +227,7 @@ const AllAssetList = () => {
             ).length || 0}
           </div>
         </div>
-        <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300 p-4">
+        <div className="stat bg-base-100 rounded-xl border border-base-300 p-4 shadow-md transform hover:scale-105 transition-all duration-200">
           <div className="stat-title text-sm">Showing</div>
           <div className="stat-value text-2xl text-info">
             {filteredAssets.length}

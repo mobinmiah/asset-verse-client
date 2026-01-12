@@ -159,19 +159,19 @@ const AllEmployees = () => {
 
         {/* Stats Card */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="stat bg-base-200 rounded-lg p-4">
+          <div className="stat bg-base-200 rounded-lg p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-sm">Total Employees</div>
             <div className="stat-value text-2xl text-primary">
               {employees.length}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-4">
+          <div className="stat bg-base-200 rounded-lg p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-sm">Total Assets Assigned</div>
             <div className="stat-value text-2xl text-info">
               {employees.reduce((sum, emp) => sum + (emp.assetCount || 0), 0)}
             </div>
           </div>
-          <div className="stat bg-base-200 rounded-lg p-4">
+          <div className="stat bg-base-200 rounded-lg p-4 shadow-md transform hover:scale-105 transition-all duration-200">
             <div className="stat-title text-sm">Active Members</div>
             <div className="stat-value text-2xl text-success">
               {employees.filter((emp) => emp.assetCount > 0).length}
