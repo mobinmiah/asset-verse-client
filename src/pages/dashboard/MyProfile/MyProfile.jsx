@@ -118,7 +118,7 @@ const MyProfile = () => {
                   : profile.photo
               }
               alt="Profile"
-              className="w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 object-cover rounded-xl shadow-2xl"
+              className="w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-xl shadow-2xl"
             />
           </div>
 

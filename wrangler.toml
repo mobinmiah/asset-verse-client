@@ -1,0 +1,18 @@
+
+name = "asset-verse-client"
+
+type = "static"
+
+account_id = "b1d1ef79913982968782fb8995cbcdbf"
+
+project_name = "asset-verse-mobin"
+
+branch = "main"
+
+compatibility_date = "2026-01-16"
+
+[build]
+
+command = "npm run build"
+
+directory = "dist"
