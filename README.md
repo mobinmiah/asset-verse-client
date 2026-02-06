@@ -8,6 +8,7 @@
 
 ## Key Features
 
+-**Admin**: Controls the whole system
 - **HR Dashboard**: View and manage company assets and employees.
 - **Asset Management**:
   - Add, edit, and delete assets
