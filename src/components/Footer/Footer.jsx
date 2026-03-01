@@ -14,7 +14,7 @@ const Footer = () => {
             Asset Verse
           </p>
           <p className="text-xs sm:text-sm text-base-content/70 mb-4">
-            Efficiently manage your physical assets!
+            Efficiently manage your company assets!
           </p>
           <p className="text-xs sm:text-sm text-base-content/60">
             Copyright © {new Date().getFullYear()} - All right reserved

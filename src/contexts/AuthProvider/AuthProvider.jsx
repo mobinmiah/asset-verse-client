@@ -6,10 +6,12 @@ import {
   GoogleAuthProvider,
   signOut,
   updateProfile,
+  sendEmailVerification,
 } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase/firebase.config";
 import { AuthContext } from "../AuthContext/AuthContext";
+import { toast } from "react-toastify";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -17,19 +19,31 @@ const AuthProvider = ({ children }) => {
 
   const googleProvider = new GoogleAuthProvider();
 
-  const registerUser = (email, password) => {
+  const registerUser = async (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
+
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+
+    await sendEmailVerification(result.user);
+
+    if (!result.user.emailVerified) {
+      return toast.error("Please verify your email.");
+    }
+    return result;
   };
 
-  const loginUser = (email, password) => {
+  const loginUser = async (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
+
+    const result = await signInWithEmailAndPassword(auth, email, password);
+
+    return result;
   };
 
-  const googleLogin = () => {
+  const googleLogin = async () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider);
+    return result;
   };
 
   const LogOut = () => {
@@ -60,9 +74,12 @@ const AuthProvider = ({ children }) => {
     googleLogin,
     LogOut,
     updateUserProfile,
+    sendEmailVerification,
   };
 
-  return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

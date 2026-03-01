@@ -158,7 +158,7 @@ const AssetDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Image Gallery */}
-          <div className="space-y-4">
+          <div className="space-y-4 h-full w-full flex justify-center items-center">
             <div className="bg-base-100 rounded-xl shadow-sm p-4">
               <img
                 src={asset.productImage}
@@ -166,7 +166,6 @@ const AssetDetails = () => {
                 className="w-full h-96 object-cover rounded-lg"
               />
             </div>
-
           </div>
 
           {/* Asset Information */}
@@ -259,7 +258,7 @@ const AssetDetails = () => {
                         <span className="font-medium">Expected Return:</span>
                         <span>
                           {new Date(
-                            asset.expectedReturnDate
+                            asset.expectedReturnDate,
                           ).toLocaleDateString()}
                         </span>
                       </div>
@@ -531,7 +530,7 @@ const AssetDetails = () => {
                       <span>
                         {asset.expectedReturnDate
                           ? new Date(
-                              asset.expectedReturnDate
+                              asset.expectedReturnDate,
                             ).toLocaleDateString()
                           : "N/A"}
                       </span>
@@ -572,8 +571,8 @@ const AssetDetails = () => {
                 {role === "employee"
                   ? "Request Information"
                   : role === "hr"
-                  ? "Management Options"
-                  : "Admin Information"}
+                    ? "Management Options"
+                    : "Admin Information"}
               </h3>
               <ul className="space-y-2 text-base-content/80">
                 {role === "employee" && (

@@ -6,9 +6,10 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 const AddAsset = () => {
-  const { user } = useAuth();
+  const { user, sendEmailVerification } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
@@ -37,20 +38,21 @@ const AddAsset = () => {
   }, [currentHR, setValue]);
 
   const handleAddAsset = async (data) => {
+  
     try {
       // Generate asset code based on category
       const categoryCode = {
-        'Electronics': 'ELC',
-        'Furniture': 'FUR',
-        'Vehicles': 'VEH',
-        'Equipment': 'EQP',
-        'Software': 'SFT',
-        'Other': 'OTH'
+        Electronics: "ELC",
+        Furniture: "FUR",
+        Vehicles: "VEH",
+        Equipment: "EQP",
+        Software: "SFT",
+        Other: "OTH",
       };
-      
-      const typeCode = data.productType === 'Returnable' ? 'RET' : 'NRT';
+
+      const typeCode = data.productType === "Returnable" ? "RET" : "NRT";
       const timestamp = Date.now().toString().slice(-4);
-      const assetCode = `AST-${categoryCode[data.category] || 'OTH'}-${typeCode}-${timestamp}`;
+      const assetCode = `AST-${categoryCode[data.category] || "OTH"}-${typeCode}-${timestamp}`;
 
       const asset = {
         productName: data.productName,
@@ -60,7 +62,7 @@ const AddAsset = () => {
         hrEmail: data.hrEmail,
         companyName: data.companyName,
         companyLogo: data.companyLogo,
-        
+
         // Additional fields from database structure
         category: data.category,
         assetCode: assetCode,
@@ -73,9 +75,9 @@ const AddAsset = () => {
         specifications: {
           warranty: data.warranty,
           maintenanceNotes: data.maintenanceNotes || "New asset",
-          lastInspectionDate: new Date().toISOString().split('T')[0]
+          lastInspectionDate: new Date().toISOString().split("T")[0],
         },
-        
+
         // System fields
         assignedTo: null,
         assignedEmployeeName: null,
@@ -96,7 +98,9 @@ const AddAsset = () => {
       Swal.fire("Error", "Failed to add asset", "error");
     }
   };
-
+  if (!sendEmailVerification) {
+    return toast("Please verify your email first.");
+  }
   return (
     <div className="max-w-3xl mx-auto">
       <Helmet>
@@ -114,8 +118,10 @@ const AddAsset = () => {
         >
           {/* HR & Company Information Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-primary border-b pb-2">HR & Company Information</h3>
-            
+            <h3 className="text-xl font-semibold text-primary border-b pb-2">
+              HR & Company Information
+            </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">
@@ -167,36 +173,48 @@ const AddAsset = () => {
 
           {/* Basic Information Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-primary border-b pb-2">Basic Information</h3>
-            
+            <h3 className="text-xl font-semibold text-primary border-b pb-2">
+              Basic Information
+            </h3>
+
             {/* Product Name */}
             <div>
               <label className="label">
                 <span className="label-text font-medium">Product Name *</span>
               </label>
               <input
-                {...register("productName", { required: "Product name is required" })}
+                {...register("productName", {
+                  required: "Product name is required",
+                })}
                 className="input input-bordered w-full focus:input-primary"
                 placeholder="e.g., Epson EB-X41 Projector"
               />
               {errors.productName && (
-                <p className="text-error text-sm mt-1">{errors.productName.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.productName.message}
+                </p>
               )}
             </div>
 
             {/* Product Image */}
             <div>
               <label className="label">
-                <span className="label-text font-medium">Product Image URL *</span>
+                <span className="label-text font-medium">
+                  Product Image URL *
+                </span>
               </label>
               <input
                 type="url"
-                {...register("photoURL", { required: "Image URL is required" })}
+                {...register("photoURL", {
+                  required: "Image URL is required",
+                })}
                 className="input input-bordered w-full focus:input-primary"
                 placeholder="https://example.com/image.jpg"
               />
               {errors.photoURL && (
-                <p className="text-error text-sm mt-1">{errors.photoURL.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.photoURL.message}
+                </p>
               )}
             </div>
 
@@ -207,10 +225,14 @@ const AddAsset = () => {
                   <span className="label-text font-medium">Category *</span>
                 </label>
                 <select
-                  {...register("category", { required: "Category is required" })}
+                  {...register("category", {
+                    required: "Category is required",
+                  })}
                   className="select select-bordered w-full focus:select-primary focus:outline-none"
                 >
-                  <option value="" disabled>Select Category</option>
+                  <option value="" disabled>
+                    Select Category
+                  </option>
                   <option value="Electronics">Electronics</option>
                   <option value="Furniture">Furniture</option>
                   <option value="Vehicles">Vehicles</option>
@@ -219,7 +241,9 @@ const AddAsset = () => {
                   <option value="Other">Other</option>
                 </select>
                 {errors.category && (
-                  <p className="text-error text-sm mt-1">{errors.category.message}</p>
+                  <p className="text-error text-sm mt-1">
+                    {errors.category.message}
+                  </p>
                 )}
               </div>
 
@@ -228,15 +252,21 @@ const AddAsset = () => {
                   <span className="label-text font-medium">Product Type *</span>
                 </label>
                 <select
-                  {...register("productType", { required: "Product type is required" })}
+                  {...register("productType", {
+                    required: "Product type is required",
+                  })}
                   className="select select-bordered w-full focus:select-primary focus:outline-none"
                 >
-                  <option value="" disabled>Select Type</option>
+                  <option value="" disabled>
+                    Select Type
+                  </option>
                   <option value="Returnable">Returnable</option>
                   <option value="Non-returnable">Non-returnable</option>
                 </select>
                 {errors.productType && (
-                  <p className="text-error text-sm mt-1">{errors.productType.message}</p>
+                  <p className="text-error text-sm mt-1">
+                    {errors.productType.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -248,23 +278,27 @@ const AddAsset = () => {
               </label>
               <input
                 type="number"
-                {...register("productQuantity", { 
-                  required: "Quantity is required", 
-                  min: { value: 1, message: "Quantity must be at least 1" }
+                {...register("productQuantity", {
+                  required: "Quantity is required",
+                  min: { value: 1, message: "Quantity must be at least 1" },
                 })}
                 className="input input-bordered w-full focus:input-primary"
                 placeholder="e.g., 5"
               />
               {errors.productQuantity && (
-                <p className="text-error text-sm mt-1">{errors.productQuantity.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.productQuantity.message}
+                </p>
               )}
             </div>
           </div>
 
           {/* Product Details Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-primary border-b pb-2">Product Details</h3>
-            
+            <h3 className="text-xl font-semibold text-primary border-b pb-2">
+              Product Details
+            </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">
@@ -303,8 +337,10 @@ const AddAsset = () => {
 
           {/* Location & Department Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-primary border-b pb-2">Location & Department</h3>
-            
+            <h3 className="text-xl font-semibold text-primary border-b pb-2">
+              Location & Department
+            </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">
@@ -314,7 +350,9 @@ const AddAsset = () => {
                   {...register("department")}
                   className="select select-bordered w-full focus:select-primary focus:outline-none"
                 >
-                  <option value="" disabled>Select Department</option>
+                  <option value="" disabled>
+                    Select Department
+                  </option>
                   <option value="Operations">Operations</option>
                   <option value="IT">Information Technology</option>
                   <option value="HR">Human Resources</option>
@@ -343,18 +381,24 @@ const AddAsset = () => {
 
           {/* Warranty & Maintenance Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-primary border-b pb-2">Warranty & Maintenance</h3>
-            
+            <h3 className="text-xl font-semibold text-primary border-b pb-2">
+              Warranty & Maintenance
+            </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">
-                  <span className="label-text font-medium">Warranty Period</span>
+                  <span className="label-text font-medium">
+                    Warranty Period
+                  </span>
                 </label>
                 <select
                   {...register("warranty")}
                   className="select select-bordered w-full focus:select-primary focus:outline-none"
                 >
-                  <option value="" disabled>Select Warranty</option>
+                  <option value="" disabled>
+                    Select Warranty
+                  </option>
                   <option value="No Warranty">No Warranty</option>
                   <option value="3 Months">3 Months</option>
                   <option value="6 Months">6 Months</option>
@@ -368,7 +412,9 @@ const AddAsset = () => {
 
               <div>
                 <label className="label">
-                  <span className="label-text font-medium">Maintenance Notes</span>
+                  <span className="label-text font-medium">
+                    Maintenance Notes
+                  </span>
                 </label>
                 <input
                   {...register("maintenanceNotes")}
@@ -386,12 +432,22 @@ const AddAsset = () => {
 
           {/* Submit Button */}
           <div className="pt-6 border-t">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary w-full btn-lg transition-colors duration-200"
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
               </svg>
               Add Asset to Inventory
             </button>

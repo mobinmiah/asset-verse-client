@@ -24,10 +24,6 @@ const Login = () => {
 
   // Demo credentials
   const demoCredentials = {
-    hr: {
-      email: "hr@assetverse.com",
-      password: "hr123456"
-    },
     employee: {
       email: "employee@assetverse.com", 
       password: "emp123456"

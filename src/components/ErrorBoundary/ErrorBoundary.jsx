@@ -20,15 +20,10 @@ class ErrorBoundary extends React.Component {
     if (import.meta.env.DEV) {
       console.error('Error caught by boundary:', error, errorInfo);
     }
-
-    // In production, you would send this to an error reporting service
-    // Example: Sentry, LogRocket, etc.
-    // this.logErrorToService(error, errorInfo);
   }
 
   logErrorToService = (error, errorInfo) => {
-    // Implementation for error logging service
-    // Example: Sentry.captureException(error, { extra: errorInfo });
+
   };
 
   handleRetry = () => {
