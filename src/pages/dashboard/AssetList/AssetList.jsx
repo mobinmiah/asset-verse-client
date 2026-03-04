@@ -4,7 +4,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import ResponsiveTable from "../../../components/ResponsiveTable/ResponsiveTable";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const AssetList = () => {
   const modalRef = useRef(null);

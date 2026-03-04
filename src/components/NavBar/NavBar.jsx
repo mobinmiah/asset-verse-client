@@ -12,16 +12,27 @@ const Navbar = () => {
   const { role } = useRole();
   const axiosSecure = useAxiosSecure();
   
-  const { data: profile = {}, isLoading } = useQuery({
-    queryKey: ["my-profile", user?.email],
-    enabled: !!user?.email,
-    queryFn: async () => {
+const { data: profile = {}, isLoading } = useQuery({
+  queryKey: ["my-profile", user?.email, role],
+  enabled: !!user?.email && !!role,
+  queryFn: async () => {
+    if (role === "admin") {
+      const res = await axiosSecure.get(`/admin/${user.email}`);
+      return res.data;
+    } else {
       const res = await axiosSecure.get(`/users/${user.email}`);
       return res.data;
-    },
-  });
+    }
+  },
+});
 
-  const profileImage = profile?.image || profile.companyLogo || profile.photo || user?.photoURL;
+ const profileImage =
+   role === "admin"
+     ? profile?.image || user?.photoURL
+     : role === "hr"
+       ? profile?.companyLogo || user?.photoURL
+       : profile?.photo || user?.photoURL;
+       
   const displayName = profile?.name || user?.displayName || user?.email?.split('@')[0] || "User";
 
   const getNavLinks = () => {

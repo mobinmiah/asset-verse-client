@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link, useRouteError } from "react-router";
 
 const ErrorPage = () => {

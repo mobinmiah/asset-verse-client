@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Packages from "../Packages/Packages";
 import About from "../About/About";
 import Banner from "../Banner/Banner";
@@ -9,8 +9,6 @@ import Stats from "../Stats/Stats";
 import RoleBasedBenefits from "../RoleBasedBenefits/RoleBasedBenefits";
 import Testimonials from "../Testimonials/Testimonials";
 import FAQ from "../FAQ/FAQ";
-import Newsletter from "../Newsletter/Newsletter";
-import CallToAction from "../CallToAction/CallToAction";
 
 const Home = () => {
   return (
@@ -51,12 +49,6 @@ const Home = () => {
       
       {/* FAQ Section */}
       <FAQ />
-      
-      {/* Newsletter Signup */}
-      <Newsletter />
-      
-      {/* Final Call to Action */}
-      <CallToAction />
     </div>
   );
 };

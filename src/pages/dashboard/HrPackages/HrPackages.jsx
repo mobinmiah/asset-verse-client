@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../components/Loading/Loading";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 
 const HrPackages = () => {

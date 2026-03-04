@@ -1,38 +1,34 @@
 import React from "react";
+import useAxios from "../../../hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../../components/Loading/Loading";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    role: "HR Director",
-    company: "TechCorp Solutions",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-    content: "AssetVerse has revolutionized how we manage our company assets. The transparency and ease of use have made our HR processes so much more efficient.",
-    rating: 5
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "Operations Manager",
-    company: "InnovateLab Inc",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    content: "The real-time tracking and reporting features have given us complete visibility into our asset utilization. Highly recommend for any growing organization.",
-    rating: 5
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    role: "IT Administrator",
-    company: "Digital Dynamics",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    content: "Setting up AssetVerse was incredibly smooth. The role-based access control ensures our data stays secure while keeping everything accessible to the right people.",
-    rating: 5
-  }
-];
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import { Link } from "react-router";
+import useAuth from "../../../hooks/useAuth";
 
 const Testimonials = () => {
+  const axios = useAxios();
+  const {user}=useAuth()
+
+  const { data: reviews, isLoading } = useQuery({
+    queryKey: ["revews"],
+    queryFn: async () => {
+      const res = await axios.get("/reviews");
+      return res.data;
+    },
+  });
+
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
   return (
-    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12 bg-gradient-to-br from-primary/5 to-secondary/5">
+    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12 rounded-lg shadow-sm shadow-neutral bg-base-100">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
@@ -43,74 +39,90 @@ const Testimonials = () => {
             Trusted by <span className="text-primary">Professionals</span>
           </h2>
           <p className="text-base-content/70 text-sm sm:text-base">
-            See how AssetVerse is helping organizations streamline their asset management processes
+            See how AssetVerse is helping organizations streamline their asset
+            management processes
           </p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.id}
-              className="card bg-base-100 shadow-sm border border-base-300 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+        {/* Swiper Slider */}
+        <Swiper
+          effect={"coverflow"}
+          grabCursor={true}
+          centeredSlides={true}
+          slidesPerView={"auto"}
+          loop={reviews.length >= 3}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          coverflowEffect={{
+            rotate: 30,
+            stretch: 0,
+            depth: 120,
+            modifier: 1,
+            slideShadows: false,
+          }}
+          pagination={{ clickable: true }}
+          modules={[EffectCoverflow, Pagination, Autoplay]}
+          className="w-full"
+        >
+          {reviews.map((review) => (
+            <SwiperSlide
+              key={review._id}
+              className="max-w-md bg-base-100 border border-base-300 rounded-2xl shadow-lg p-6"
             >
-              <div className="card-body p-6">
-                {/* Rating Stars */}
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-4 h-4 text-warning fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
+              {/* Rating */}
+              <div className="flex mb-4">
+                {[...Array(review.rating || 5)].map((_, i) => (
+                  <svg
+                    key={i}
+                    className="w-4 h-4 text-warning fill-current"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+
+              {/* Content */}
+              <p className="text-base-content/80 mb-6 text-sm leading-relaxed">
+                "{review.content}"
+              </p>
+
+              {/* User Info */}
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/20">
+                  <img
+                    src={review.image}
+                    alt={review.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = `https://ui-avatars.com/api/?name=${review.name}`;
+                    }}
+                  />
                 </div>
 
-                {/* Testimonial Content */}
-                <blockquote className="text-base-content/80 text-sm sm:text-base mb-6 leading-relaxed">
-                  "{testimonial.content}"
-                </blockquote>
-
-                {/* Author Info */}
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="w-12 h-12 rounded-full ring-2 ring-primary/20">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        onError={(e) => {
-                          e.target.src = `https://ui-avatars.com/api/?name=${testimonial.name}&background=14C2ED&color=fff&size=48`;
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-base-content text-sm">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-xs text-base-content/60">
-                      {testimonial.role}
-                    </p>
-                    <p className="text-xs text-primary font-medium">
-                      {testimonial.company}
-                    </p>
-                  </div>
+                <div>
+                  <h4 className="font-semibold text-sm">{review.name}</h4>
+                  <p className="text-xs text-base-content/60">{review.role}</p>
+                  <p className="text-xs text-primary font-medium">
+                    {review.company}
+                  </p>
                 </div>
               </div>
-            </div>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
 
         {/* CTA */}
         <div className="text-center mt-12">
-          <p className="text-base-content/70 mb-4">
-            Join hundreds of satisfied customers
-          </p>
-          <button className="btn btn-primary hover:scale-105 transition-transform duration-200">
-            Start Your Free Trial
-          </button>
+          <Link
+            to={user ? "/add-review" : "/login"}
+            state={user ? undefined : "/add-review"}
+            className="btn btn-primary hover:scale-105 transition-transform duration-200"
+          >
+            Leave Your Feedback
+          </Link>
         </div>
       </div>
     </section>

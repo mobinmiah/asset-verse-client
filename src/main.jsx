@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthProvider from "./contexts/AuthProvider/AuthProvider.jsx";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
+import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,24 +24,26 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RouterProvider router={router}></RouterProvider>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            toastClassName="text-sm"
-          />
-        </AuthProvider>
-      </QueryClientProvider>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <RouterProvider router={router}></RouterProvider>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+              toastClassName="text-sm"
+            />
+          </AuthProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   </StrictMode>
 );

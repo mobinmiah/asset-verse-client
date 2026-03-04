@@ -48,42 +48,44 @@ const TopRequestedAssetsChart = () => {
   }
 
   return (
-    <div className="bg-base-100 p-3 sm:p-4 lg:p-6 rounded-xl shadow h-64 sm:h-72 lg:h-80 w-full">
+    <div className="bg-base-100 p-3 sm:p-4 lg:p-6 rounded-xl shadow w-full">
       <h3 className="text-sm sm:text-base lg:text-lg font-semibold mb-2 sm:mb-4 text-center text-primary">
         Top 5 Requested Assets
       </h3>
 
-      <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 40 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-base-300)" />
-          <XAxis 
-            dataKey="name" 
-            tick={{ fontSize: 10, fill: "var(--color-neutral)" }} 
-            interval={0}
-            angle={-45}
-            textAnchor="end"
-            height={60}
-          />
-          <YAxis 
-            allowDecimals={false} 
-            tick={{ fontSize: 10, fill: "var(--color-neutral)" }}
-            width={30}
-          />
-          <Tooltip 
-            contentStyle={{
-              backgroundColor: "var(--color-base-100)",
-              border: "1px solid var(--color-primary)",
-              borderRadius: "8px",
-              fontSize: "12px"
-            }}
-          />
-          <Bar 
-            dataKey="requests" 
-            fill="var(--color-primary)"
-            radius={[4, 4, 0, 0]}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="h-56 sm:h-64 lg:h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 40 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-base-300)" />
+            <XAxis 
+              dataKey="name" 
+              tick={{ fontSize: 10, fill: "var(--color-neutral)" }} 
+              interval={0}
+              angle={-45}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis 
+              allowDecimals={false} 
+              tick={{ fontSize: 10, fill: "var(--color-neutral)" }}
+              width={30}
+            />
+            <Tooltip 
+              contentStyle={{
+                backgroundColor: "var(--color-base-100)",
+                border: "1px solid var(--color-primary)",
+                borderRadius: "8px",
+                fontSize: "12px"
+              }}
+            />
+            <Bar 
+              dataKey="requests" 
+              fill="var(--color-primary)"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

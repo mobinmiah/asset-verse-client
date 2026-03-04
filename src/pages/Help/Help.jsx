@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const Help = () => {
   const [activeCategory, setActiveCategory] = useState('getting-started');
@@ -101,22 +101,26 @@ const Help = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
       <Helmet>
         <title>Help & Support - AssetVerse | Get Help</title>
-        <meta name="description" content="Find answers to common questions about AssetVerse. Get help with account setup, asset management, billing, and troubleshooting." />
+        <meta
+          name="description"
+          content="Find answers to common questions about AssetVerse. Get help with account setup, asset management, billing, and troubleshooting."
+        />
       </Helmet>
 
       {/* Hero Section */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/10 to-secondary/10">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-6">
             Help & Support
           </h1>
           <p className="text-lg sm:text-xl text-base-content/80 leading-relaxed mb-8">
-            Find answers to common questions and get the help you need to make the most of AssetVerse.
+            Find answers to common questions and get the help you need to make
+            the most of AssetVerse.
           </p>
-          
+
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto">
             <div className="relative">
@@ -144,14 +148,16 @@ const Help = () => {
       </section>
 
       {/* Help Content */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-base-100">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Categories Sidebar */}
             <div className="lg:col-span-1">
               <div className="card bg-base-200 shadow-sm border border-base-300 sticky top-4">
                 <div className="card-body p-4">
-                  <h3 className="font-bold text-primary mb-4">Help Categories</h3>
+                  <h3 className="font-bold text-primary mb-4">
+                    Help Categories
+                  </h3>
                   <ul className="space-y-2">
                     {categories.map((category) => (
                       <li key={category.id}>
@@ -159,12 +165,14 @@ const Help = () => {
                           onClick={() => setActiveCategory(category.id)}
                           className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center gap-3 ${
                             activeCategory === category.id
-                              ? 'bg-primary text-white'
-                              : 'hover:bg-base-300'
+                              ? "bg-primary text-white"
+                              : "hover:bg-base-300"
                           }`}
                         >
                           <span className="text-lg">{category.icon}</span>
-                          <span className="text-sm font-medium">{category.name}</span>
+                          <span className="text-sm font-medium">
+                            {category.name}
+                          </span>
                         </button>
                       </li>
                     ))}
@@ -178,15 +186,18 @@ const Help = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-2xl">
-                    {categories.find(cat => cat.id === activeCategory)?.icon}
+                    {categories.find((cat) => cat.id === activeCategory)?.icon}
                   </span>
                   <h2 className="text-2xl font-bold text-primary">
-                    {categories.find(cat => cat.id === activeCategory)?.name}
+                    {categories.find((cat) => cat.id === activeCategory)?.name}
                   </h2>
                 </div>
 
                 {helpContent[activeCategory]?.map((item, index) => (
-                  <div key={index} className="card bg-base-200 shadow-sm border border-base-300">
+                  <div
+                    key={index}
+                    className="card bg-base-200 shadow-sm border border-base-300"
+                  >
                     <div className="card-body p-6">
                       <h3 className="text-lg font-semibold text-primary mb-3">
                         {item.question}
@@ -204,40 +215,51 @@ const Help = () => {
       </section>
 
       {/* Contact Support */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-base-200">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-6">
             Still Need Help?
           </h2>
           <p className="text-base-content/80 text-lg mb-8">
-            Can't find what you're looking for? Our support team is here to help you succeed.
+            Can't find what you're looking for? Our support team is here to help
+            you succeed.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="card bg-base-100 shadow-sm border border-base-300">
               <div className="card-body text-center p-6">
                 <div className="text-3xl mb-3">💬</div>
                 <h3 className="font-bold text-primary mb-2">Live Chat</h3>
-                <p className="text-sm text-base-content/70 mb-4">Get instant help</p>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Get instant help
+                </p>
                 <button className="btn btn-primary btn-sm">Start Chat</button>
               </div>
             </div>
-            
+
             <div className="card bg-base-100 shadow-sm border border-base-300">
               <div className="card-body text-center p-6">
                 <div className="text-3xl mb-3">📧</div>
                 <h3 className="font-bold text-primary mb-2">Email Support</h3>
-                <p className="text-sm text-base-content/70 mb-4">Response within 24h</p>
-                <button className="btn btn-outline btn-primary btn-sm">Send Email</button>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Response within 24h
+                </p>
+                <button className="btn btn-outline btn-primary btn-sm">
+                  Send Email
+                </button>
               </div>
             </div>
-            
+
             <div className="card bg-base-100 shadow-sm border border-base-300">
               <div className="card-body text-center p-6">
                 <div className="text-3xl mb-3">📞</div>
                 <h3 className="font-bold text-primary mb-2">Phone Support</h3>
-                <p className="text-sm text-base-content/70 mb-4">Mon-Fri 8am-6pm EST</p>
-                <button className="btn btn-outline btn-primary btn-sm">Call Now</button>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Mon-Fri 8am-6pm EST
+                </p>
+                <button className="btn btn-outline btn-primary btn-sm">
+                  Call Now
+                </button>
               </div>
             </div>
           </div>
@@ -245,7 +267,7 @@ const Help = () => {
       </section>
 
       {/* Resources */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-base-100">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">
@@ -255,41 +277,59 @@ const Help = () => {
               Explore more ways to get the most out of AssetVerse
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300">
               <div className="card-body text-center p-6">
                 <div className="text-4xl mb-4">📚</div>
                 <h3 className="font-bold text-primary mb-2">User Guide</h3>
-                <p className="text-sm text-base-content/70 mb-4">Comprehensive documentation</p>
-                <button className="btn btn-outline btn-primary btn-sm">View Guide</button>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Comprehensive documentation
+                </p>
+                <button className="btn btn-outline btn-primary btn-sm">
+                  View Guide
+                </button>
               </div>
             </div>
-            
+
             <div className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300">
               <div className="card-body text-center p-6">
                 <div className="text-4xl mb-4">🎥</div>
                 <h3 className="font-bold text-primary mb-2">Video Tutorials</h3>
-                <p className="text-sm text-base-content/70 mb-4">Step-by-step walkthroughs</p>
-                <button className="btn btn-outline btn-primary btn-sm">Watch Videos</button>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Step-by-step walkthroughs
+                </p>
+                <button className="btn btn-outline btn-primary btn-sm">
+                  Watch Videos
+                </button>
               </div>
             </div>
-            
+
             <div className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300">
               <div className="card-body text-center p-6">
                 <div className="text-4xl mb-4">🔄</div>
-                <h3 className="font-bold text-primary mb-2">API Documentation</h3>
-                <p className="text-sm text-base-content/70 mb-4">For developers</p>
-                <button className="btn btn-outline btn-primary btn-sm">View API</button>
+                <h3 className="font-bold text-primary mb-2">
+                  API Documentation
+                </h3>
+                <p className="text-sm text-base-content/70 mb-4">
+                  For developers
+                </p>
+                <button className="btn btn-outline btn-primary btn-sm">
+                  View API
+                </button>
               </div>
             </div>
-            
+
             <div className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300">
               <div className="card-body text-center p-6">
                 <div className="text-4xl mb-4">📊</div>
                 <h3 className="font-bold text-primary mb-2">Best Practices</h3>
-                <p className="text-sm text-base-content/70 mb-4">Tips for success</p>
-                <button className="btn btn-outline btn-primary btn-sm">Learn More</button>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Tips for success
+                </p>
+                <button className="btn btn-outline btn-primary btn-sm">
+                  Learn More
+                </button>
               </div>
             </div>
           </div>
@@ -297,7 +337,7 @@ const Help = () => {
       </section>
 
       {/* Terms & Privacy */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-base-200 border-t border-base-300">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-base-content/70">
             <button className="link link-hover">Terms of Service</button>

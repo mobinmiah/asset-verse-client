@@ -5,14 +5,31 @@
 @plugin "daisyui/theme" {
     name: "light";
     default: true;
-    --color-primary: #14C2ED;
-    --color-secondary: #10B981;
-    --color-accent: #F59E0B;
-    --color-neutral: #0F172A;
+
+    /* Main Brand - Electric Blue */
+    --color-primary: #2563EB;
+    /* Strong blue */
+    --color-primary-content: #FFFFFF;
+
+    /* Secondary - Soft Cyan */
+    --color-secondary: #06B6D4;
+    --color-secondary-content: #FFFFFF;
+
+    /* Accent - Gold highlight from dashboard icons */
+    --color-accent: #FBBF24;
+    --color-accent-content: #0F172A;
+
+    /* Neutral Text */
+    --color-neutral: #1E293B;
+    --color-neutral-content: #FFFFFF;
+
+    /* Background System */
     --color-base-100: #FFFFFF;
-    --color-base-200: #F8FAFC;
+    --color-base-200: #F1F5F9;
     --color-base-300: #E2E8F0;
-    --color-info: #38BDF8;
+
+    /* Status Colors */
+    --color-info: #0EA5E9;
     --color-success: #22C55E;
     --color-warning: #F59E0B;
     --color-error: #EF4444;
@@ -20,14 +37,29 @@
 
 @plugin "daisyui/theme" {
     name: "dark";
-    --color-primary: #14C2ED;
-    --color-secondary: #10B981;
-    --color-accent: #F59E0B;
-    --color-neutral: #94A3B8;
-    --color-base-100: #0F172A;
-    --color-base-200: #1E293B;
-    --color-base-300: #334155;
-    --color-info: #0EA5E9;
+
+    /* Electric Blue Glow */
+    --color-primary: #3B82F6;
+    --color-primary-content: #FFFFFF;
+
+    /* Cyan Accent Glow */
+    --color-secondary: #22D3EE;
+    --color-secondary-content: #0F172A;
+
+    /* Gold Highlight */
+    --color-accent: #FBBF24;
+    --color-accent-content: #0F172A;
+
+    /* Neutral Text */
+    --color-neutral: #CBD5E1;
+    --color-neutral-content: #0F172A;
+
+    /* Deep Navy Background (like image) */
+    --color-base-100: #0B1120;
+    --color-base-200: #0F172A;
+    --color-base-300: #1E293B;
+
+    --color-info: #38BDF8;
     --color-success: #16A34A;
     --color-warning: #F59E0B;
     --color-error: #DC2626;
@@ -61,6 +93,12 @@
     .card:hover {
         @apply -translate-y-1 shadow-lg;
     }
+}
+
+.hero {
+    background: radial-gradient(circle at 70% 50%,
+            rgba(59, 130, 246, 0.15),
+            transparent 40%);
 }
 
 select,input{

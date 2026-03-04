@@ -46,32 +46,34 @@ const AssetTypePieChart = () => {
   }
 
   return (
-    <div className="bg-base-100 p-3 sm:p-4 lg:p-6 rounded-xl shadow h-64 sm:h-72 lg:h-80 w-full">
+    <div className="bg-base-100 p-3 sm:p-4 lg:p-6 rounded-xl shadow w-full">
       <h3 className="text-sm sm:text-base lg:text-lg font-semibold mb-2 sm:mb-4 text-center text-primary">
         Asset Type Distribution
       </h3>
 
-      <ResponsiveContainer width="100%" height="85%">
-        <PieChart>
-          <Pie
-            data={chartData}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius="70%"
-            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-            labelLine={false}
-            fontSize={12}
-          >
-            {chartData.map((_, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(value) => [value, "Count"]} />
-          <Legend wrapperStyle={{ fontSize: '12px' }} />
-        </PieChart>
-      </ResponsiveContainer>
+      <div className="h-56 sm:h-64 lg:h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius="70%"
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              labelLine={false}
+              fontSize={12}
+            >
+              {chartData.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip formatter={(value) => [value, "Count"]} />
+            <Legend wrapperStyle={{ fontSize: '12px' }} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

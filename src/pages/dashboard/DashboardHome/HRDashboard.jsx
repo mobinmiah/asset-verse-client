@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import AssetTypePieChart from '../Charts/AssetTypePielChrat/AssetTypePielChrat';
 import TopRequestedAssetsChart from '../Charts/TopRequestedAssetsChart/TopRequestedAssetsChart';
 import DashboardStats from '../Charts/DashboardStats/DashboardStats';

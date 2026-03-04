@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";

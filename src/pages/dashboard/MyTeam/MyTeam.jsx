@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import { Loading } from "../../../components/LoadingStates/LoadingStates";

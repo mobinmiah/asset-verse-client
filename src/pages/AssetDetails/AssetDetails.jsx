@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";

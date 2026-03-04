@@ -32,6 +32,7 @@ import AdminDashboard from "../pages/dashboard/DashboardHome/AdminDashboard";
 import AdminUsers from "../pages/dashboard/AdminUsers/AdminUsers";
 import AdminOrganizations from "../pages/dashboard/AdminOrganizations/AdminOrganizations";
 import AllAssetList from "../pages/dashboard/AllAssetList/AllAssetList";
+import AddReview from "../pages/AddReview/AddReview";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,14 @@ export const router = createBrowserRouter([
       {
         path: "help",
         element: <Help />,
+      },
+      {
+        path: "add-review",
+        element: (
+          <PrivateRoute>
+            <AddReview />
+          </PrivateRoute>
+        ),
       },
       {
         path: "assets",

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import Stats from '../home/Stats/Stats';
 
 const About = () => {
   const features = [
@@ -41,44 +42,48 @@ const About = () => {
     }
   ];
 
-  const stats = [
-    { number: '100+', label: 'Organizations Trust Us' },
-    { number: '5,000+', label: 'Assets Managed Daily' },
-    { number: '99.9%', label: 'Platform Uptime' },
-    { number: '24/7', label: 'Customer Support' }
-  ];
-
   return (
-    <div className="min-h-screen">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
       <Helmet>
         <title>About Us - AssetVerse | Learn About Our Mission</title>
-        <meta name="description" content="Learn about AssetVerse's mission to revolutionize asset management for organizations worldwide. Meet our team and discover our values." />
+        <meta
+          name="description"
+          content="Learn about AssetVerse's mission to revolutionize asset management for organizations worldwide. Meet our team and discover our values."
+        />
       </Helmet>
 
       {/* Hero Section */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/10 to-secondary/10">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-6">
             About AssetVerse
           </h1>
           <p className="text-lg sm:text-xl text-base-content/80 leading-relaxed">
-            We're on a mission to transform how organizations manage their assets. 
-            Founded in 2023, AssetVerse has quickly become the trusted platform for 
-            companies seeking transparency, efficiency, and control over their resources.
+            We're on a mission to transform how organizations manage their
+            assets. Founded in 2023, AssetVerse has quickly become the trusted
+            platform for companies seeking transparency, efficiency, and control
+            over their resources.
           </p>
         </div>
       </section>
 
       {/* Mission, Vision, Values */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-base-100">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300">
+              <div
+                key={index}
+                className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300"
+              >
                 <div className="card-body text-center p-6">
                   <div className="text-5xl mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-bold text-primary mb-4">{feature.title}</h3>
-                  <p className="text-base-content/80 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-primary mb-4">
+                    {feature.title}
+                  </h3>
+                  <p className="text-base-content/80 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -87,46 +92,26 @@ const About = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary to-secondary">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              AssetVerse by the Numbers
-            </h2>
-            <p className="text-white/90 text-lg">
-              Our impact speaks for itself
-            </p>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-white mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-white/80 text-sm sm:text-base">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Stats></Stats>
 
       {/* Team Section */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-base-100">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">
               Meet Our Team
             </h2>
             <p className="text-base-content/80 text-lg max-w-2xl mx-auto">
-              The passionate individuals behind AssetVerse, dedicated to revolutionizing 
-              asset management for organizations worldwide.
+              The passionate individuals behind AssetVerse, dedicated to
+              revolutionizing asset management for organizations worldwide.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((member, index) => (
-              <div key={index} className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300">
+              <div
+                key={index}
+                className="card bg-base-200 shadow-sm border border-base-300 hover:shadow-md transition-all duration-300"
+              >
                 <div className="card-body text-center p-6">
                   <div className="avatar mb-4">
                     <div className="w-24 h-24 rounded-full ring-4 ring-primary/20">
@@ -139,9 +124,15 @@ const About = () => {
                       />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold text-primary mb-1">{member.name}</h3>
-                  <p className="text-secondary font-medium mb-3">{member.role}</p>
-                  <p className="text-base-content/80 text-sm leading-relaxed">{member.bio}</p>
+                  <h3 className="text-xl font-bold text-primary mb-1">
+                    {member.name}
+                  </h3>
+                  <p className="text-secondary font-medium mb-3">
+                    {member.role}
+                  </p>
+                  <p className="text-base-content/80 text-sm leading-relaxed">
+                    {member.bio}
+                  </p>
                 </div>
               </div>
             ))}
@@ -150,7 +141,7 @@ const About = () => {
       </section>
 
       {/* Story Section */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-base-200">
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-6">
@@ -159,43 +150,24 @@ const About = () => {
           </div>
           <div className="prose prose-lg max-w-none text-base-content/80">
             <p className="text-lg leading-relaxed mb-6">
-              AssetVerse was born from a simple observation: organizations were struggling 
-              with outdated, inefficient methods of tracking and managing their assets. 
-              Spreadsheets, paper forms, and disconnected systems were creating chaos 
-              instead of clarity.
+              AssetVerse was born from a simple observation: organizations were
+              struggling with outdated, inefficient methods of tracking and
+              managing their assets. Spreadsheets, paper forms, and disconnected
+              systems were creating chaos instead of clarity.
             </p>
             <p className="text-lg leading-relaxed mb-6">
-              Our founders, having experienced these challenges firsthand in their corporate 
-              careers, envisioned a better way. They imagined a platform that would bring 
-              transparency, efficiency, and control to asset management while being 
-              accessible to organizations of all sizes.
+              Our founders, having experienced these challenges firsthand in
+              their corporate careers, envisioned a better way. They imagined a
+              platform that would bring transparency, efficiency, and control to
+              asset management while being accessible to organizations of all
+              sizes.
             </p>
             <p className="text-lg leading-relaxed">
-              Today, AssetVerse serves hundreds of organizations worldwide, from startups 
-              to enterprises, helping them optimize their resources and focus on what 
-              matters most: growing their business and serving their customers.
+              Today, AssetVerse serves hundreds of organizations worldwide, from
+              startups to enterprises, helping them optimize their resources and
+              focus on what matters most: growing their business and serving
+              their customers.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-accent/10 to-primary/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-6">
-            Ready to Transform Your Asset Management?
-          </h2>
-          <p className="text-lg text-base-content/80 mb-8">
-            Join the hundreds of organizations already using AssetVerse to streamline 
-            their operations and boost productivity.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn btn-primary btn-lg hover:scale-105 transition-transform duration-200">
-              Start Free Trial
-            </button>
-            <button className="btn btn-outline btn-primary btn-lg hover:scale-105 transition-transform duration-200">
-              Contact Sales
-            </button>
           </div>
         </div>
       </section>

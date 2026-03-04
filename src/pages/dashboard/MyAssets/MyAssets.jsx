@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Loading } from "../../../components/LoadingStates/LoadingStates";
 import ResponsiveTable from "../../../components/ResponsiveTable/ResponsiveTable";

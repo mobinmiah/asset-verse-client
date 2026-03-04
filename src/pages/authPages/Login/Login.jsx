@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa6";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
@@ -24,6 +24,14 @@ const Login = () => {
 
   // Demo credentials
   const demoCredentials = {
+    admin: {
+      email: "admin@assetverse.com",
+      password: "adminpass"
+    },
+    hr: {
+      email: "mdmobinmiah1998@gmail.com",
+      password: "hrpass123"
+    },
     employee: {
       email: "employee@assetverse.com", 
       password: "emp123456"
@@ -114,19 +122,42 @@ const Login = () => {
         </div>
 
         {/* Demo Credentials */}
-        <div className="bg-info/10 border border-info/20 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-info text-sm mb-2">
-            🎯 Demo Accounts
-          </h3>
-          <div className="space-y-2">
+        <div className="bg-gradient-to-br from-info/10 to-primary/5 border border-info/30 rounded-xl p-4 mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-2xl">🎯</span>
+            <h3 className="font-semibold text-info text-sm">
+              Try Demo Accounts
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 gap-2">
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("admin")}
+              className="btn btn-sm btn-outline btn-error hover:btn-error w-full justify-start"
+            >
+              <span className="text-lg">👑</span>
+              <span className="flex-1 text-left">Admin Account</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("hr")}
+              className="btn btn-sm btn-outline btn-warning hover:btn-warning w-full justify-start"
+            >
+              <span className="text-lg">💼</span>
+              <span className="flex-1 text-left">HR Manager Account</span>
+            </button>
             <button
               type="button"
               onClick={() => fillDemoCredentials("employee")}
-              className="btn btn-outline btn-info btn-xs w-full"
+              className="btn btn-sm btn-outline btn-success hover:btn-success w-full justify-start"
             >
-              Demo Employee Account
+              <span className="text-lg">👤</span>
+              <span className="flex-1 text-left">Employee Account</span>
             </button>
           </div>
+          <p className="text-xs text-base-content/60 mt-3 text-center">
+            Click any button to auto-fill credentials
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">

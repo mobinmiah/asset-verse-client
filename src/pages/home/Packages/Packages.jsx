@@ -1,10 +1,12 @@
-import React from "react";
 import useAxios from "../../../hooks/useAxios";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../components/Loading/Loading";
+import { Link } from "react-router";
+import useAuth from "../../../hooks/useAuth";
 
 const Packages = () => {
   const axios = useAxios();
+  const { user } = useAuth();
 
   const { data: packages = [], isLoading } = useQuery({
     queryKey: ["packages"],
@@ -19,7 +21,7 @@ const Packages = () => {
   }
 
   return (
-    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
+    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12 rounded-lg shadow-sm shadow-neutral bg-base-100">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
@@ -86,9 +88,13 @@ const Packages = () => {
 
                 {/* CTA */}
                 <div className="mt-6">
-                  <button className="btn btn-primary btn-block">
+                  <Link
+                    to={user ? "/dashboard/upgrade-package-hr" : "/login"}
+                    state={user ? undefined : "/dashboard/upgrade-package-hr"}
+                    className="btn btn-primary btn-block hover:scale-105 transition-transform duration-200"
+                  >
                     Subscribe
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

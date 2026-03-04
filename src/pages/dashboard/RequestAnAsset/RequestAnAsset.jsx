@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 import Loading from "../../../components/Loading/Loading";
 import { toast } from "react-toastify";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const RequestAnAsset = () => {
   const axiosSecure = useAxiosSecure();
+  const { user, isEmailVerified, resendVerificationEmail } = useAuth();
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -201,7 +203,13 @@ const RequestAnAsset = () => {
               </div>
 
               <button
-                onClick={() => {
+                onClick={async () => {
+                  // Check email verification before allowing request
+                  const verified = await isEmailVerified();
+                  if (!verified) {
+                    toast.error("Please verify your email before requesting assets");
+                    return;
+                  }
                   setSelectedAsset(product);
                   document.getElementById("request_modal").showModal();
                 }}

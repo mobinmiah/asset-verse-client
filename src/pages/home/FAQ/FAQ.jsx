@@ -51,7 +51,7 @@ const FAQ = () => {
   };
 
   return (
-    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12 bg-base-100">
+    <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12  rounded-lg shadow-sm shadow-neutral bg-base-100">
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16">
@@ -62,7 +62,8 @@ const FAQ = () => {
             Got <span className="text-primary">Questions?</span>
           </h2>
           <p className="text-base-content/70 text-sm sm:text-base max-w-2xl mx-auto">
-            Find answers to common questions about AssetVerse and how it can help your organization
+            Find answers to common questions about AssetVerse and how it can
+            help your organization
           </p>
         </div>
 
@@ -81,10 +82,10 @@ const FAQ = () => {
                   <h3 className="font-semibold text-base-content text-sm sm:text-base pr-4">
                     {faq.question}
                   </h3>
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <svg
                       className={`w-5 h-5 text-primary transition-transform duration-200 ${
-                        openFAQ === faq.id ? 'rotate-180' : ''
+                        openFAQ === faq.id ? "rotate-180" : ""
                       }`}
                       fill="none"
                       stroke="currentColor"
@@ -99,7 +100,7 @@ const FAQ = () => {
                     </svg>
                   </div>
                 </button>
-                
+
                 {openFAQ === faq.id && (
                   <div className="px-4 sm:px-6 pb-4 sm:pb-6">
                     <div className="border-t border-base-300 pt-4">
@@ -112,24 +113,6 @@ const FAQ = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Contact CTA */}
-        <div className="text-center mt-12 p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl">
-          <h3 className="text-lg font-semibold text-base-content mb-2">
-            Still have questions?
-          </h3>
-          <p className="text-base-content/70 text-sm mb-4">
-            Our support team is here to help you get the most out of AssetVerse
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button className="btn btn-primary btn-sm hover:scale-105 transition-transform duration-200">
-              Contact Support
-            </button>
-            <button className="btn btn-outline btn-primary btn-sm hover:scale-105 transition-transform duration-200">
-              Schedule Demo
-            </button>
-          </div>
         </div>
       </div>
     </section>

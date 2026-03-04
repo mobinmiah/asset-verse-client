@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 const AddAsset = () => {
-  const { user, sendEmailVerification } = useAuth();
+  const { user, isEmailVerified } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
@@ -38,6 +38,11 @@ const AddAsset = () => {
   }, [currentHR, setValue]);
 
   const handleAddAsset = async (data) => {
+    // Check email verification
+    if (!isEmailVerified()) {
+      toast.error("Please verify your email before adding assets.");
+      return;
+    }
   
     try {
       // Generate asset code based on category
@@ -98,9 +103,7 @@ const AddAsset = () => {
       Swal.fire("Error", "Failed to add asset", "error");
     }
   };
-  if (!sendEmailVerification) {
-    return toast("Please verify your email first.");
-  }
+
   return (
     <div className="max-w-3xl mx-auto">
       <Helmet>
