@@ -50,7 +50,7 @@ _HR Dashboard - Human Resources asset management interface_
 ![Employee Dashboard](ss/employeeDashbard.png)
 _Employee Dashboard - Personal asset view and request management_
 
-### Dashboards
+### Assets
 
 ![All Assets](ss/assets.png)
 _All Assets With Search Functionality_
