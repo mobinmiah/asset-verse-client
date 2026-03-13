@@ -198,20 +198,21 @@ const AssetList = () => {
       header: "Asset",
       accessor: "productName",
       render: (item) => (
-        <div className="flex flex-col lg:flex-row items-center gap-3">
-          <div className="avatar">
-            <div className="w-full lg:mask lg:mask-squircle lg:w-12 md:h-12">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+          <div className="avatar flex-shrink-0">
+            <div className="w-16 h-16 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-12 lg:h-12 rounded-lg overflow-hidden">
               <img
                 src={item.productImage}
                 alt={item.productName}
+                className="w-full h-full object-cover"
               />
             </div>
           </div>
-          <div>
-            <div className="font-bold text-sm sm:text-base line-clamp-1">
+          <div className="text-center sm:text-left flex-1 min-w-0">
+            <div className="font-bold text-sm sm:text-base line-clamp-2 sm:line-clamp-1">
               {item.productName}
             </div>
-            <div className="text-xs text-base-content/70">
+            <div className="text-xs text-base-content/70 truncate">
               {item.brand && item.model
                 ? `${item.brand} ${item.model}`
                 : item.category || "No category"}
@@ -317,14 +318,14 @@ const AssetList = () => {
       header: "Actions",
       accessor: "actions",
       render: (item) => (
-        <div className="flex flex-col sm:flex-row gap-2 items-stretch">
+        <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 items-stretch">
           <button
             onClick={() => openDetailsModal(item)}
-            className="btn btn-primary w-full sm:w-auto"
+            className="btn btn-primary btn-xs sm:btn-sm w-full sm:w-auto"
             title="View Asset Details"
           >
             <svg
-              className="w-3 h-3"
+              className="w-3 h-3 sm:w-4 sm:h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -342,15 +343,15 @@ const AssetList = () => {
                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
               />
             </svg>
-            View
+            <span className="hidden sm:inline">View</span>
           </button>
           <button
             onClick={() => openEditModal(item)}
-            className="btn btn-info w-full sm:w-auto"
+            className="btn btn-info btn-xs sm:btn-sm w-full sm:w-auto"
             title="Edit Asset"
           >
             <svg
-              className="w-3 h-3"
+              className="w-3 h-3 sm:w-4 sm:h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -362,15 +363,15 @@ const AssetList = () => {
                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
               />
             </svg>
-            Edit
+            <span className="hidden sm:inline">Edit</span>
           </button>
           <button
             onClick={() => handleDeleteAsset(item._id)}
-            className="btn btn-error w-full sm:w-auto"
+            className="btn btn-error btn-xs sm:btn-sm w-full sm:w-auto"
             title="Delete Asset"
           >
             <svg
-              className="w-3 h-3"
+              className="w-3 h-3 sm:w-4 sm:h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -382,7 +383,7 @@ const AssetList = () => {
                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
               />
             </svg>
-            Delete
+            <span className="hidden sm:inline">Delete</span>
           </button>
         </div>
       ),
@@ -456,26 +457,26 @@ const AssetList = () => {
 
       {/* Enhanced Edit Modal */}
       <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box max-w-4xl max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-bold text-primary">Edit Asset</h3>
+        <div className="modal-box w-11/12 max-w-4xl max-h-[90vh] sm:max-h-[95vh] overflow-y-auto p-3 sm:p-6">
+          <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex-1">Edit Asset</h3>
             <button
               type="button"
               onClick={closeModal}
-              className="btn btn-sm btn-circle btn-ghost"
+              className="btn btn-sm btn-circle btn-ghost flex-shrink-0"
             >
               ✕
             </button>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmitEdit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmitEdit)} className="space-y-4 sm:space-y-6">
             {/* Basic Information Section */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-primary border-b pb-2">
+            <div className="space-y-3 sm:space-y-4">
+              <h4 className="text-base sm:text-lg font-semibold text-primary border-b pb-2">
                 Basic Information
               </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="label">
                     <span className="label-text font-medium">
@@ -518,7 +519,7 @@ const AssetList = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <div>
                   <label className="label">
                     <span className="label-text font-medium">Category *</span>
@@ -591,12 +592,12 @@ const AssetList = () => {
             </div>
 
             {/* Product Details Section */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-primary border-b pb-2">
+            <div className="space-y-3 sm:space-y-4">
+              <h4 className="text-base sm:text-lg font-semibold text-primary border-b pb-2">
                 Product Details
               </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="label">
                     <span className="label-text font-medium">Brand</span>
@@ -633,12 +634,12 @@ const AssetList = () => {
             </div>
 
             {/* Location & Department Section */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-primary border-b pb-2">
+            <div className="space-y-3 sm:space-y-4">
+              <h4 className="text-base sm:text-lg font-semibold text-primary border-b pb-2">
                 Location & Department
               </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="label">
                     <span className="label-text font-medium">Department</span>
@@ -675,12 +676,12 @@ const AssetList = () => {
             </div>
 
             {/* Warranty & Maintenance Section */}
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-primary border-b pb-2">
+            <div className="space-y-3 sm:space-y-4">
+              <h4 className="text-base sm:text-lg font-semibold text-primary border-b pb-2">
                 Warranty & Maintenance
               </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="label">
                     <span className="label-text font-medium">
@@ -719,12 +720,12 @@ const AssetList = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="modal-action pt-6 border-t">
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+            <div className="modal-action pt-4 sm:pt-6 border-t">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="btn btn-outline order-2 sm:order-1"
+                  className="btn btn-outline btn-sm sm:btn-md w-full sm:w-auto order-2 sm:order-1"
                 >
                   <svg
                     className="w-4 h-4"
@@ -743,7 +744,7 @@ const AssetList = () => {
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary order-1 sm:order-2"
+                  className="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto order-1 sm:order-2"
                 >
                   <svg
                     className="w-4 h-4"
@@ -778,31 +779,31 @@ const AssetList = () => {
         ref={detailsModalRef}
         className="modal modal-bottom sm:modal-middle"
       >
-        <div className="modal-box max-w-6xl max-h-[95vh] overflow-y-auto">
+        <div className="modal-box w-11/12 max-w-6xl max-h-[90vh] sm:max-h-[95vh] overflow-y-auto p-3 sm:p-6">
           {viewingAsset && (
             <>
               {/* Simple Modal Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-primary">
+              <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex-1 pr-2">
                   Asset Details - {viewingAsset.productName}
                 </h3>
                 <button
                   type="button"
                   onClick={closeDetailsModal}
-                  className="btn btn-sm btn-circle btn-ghost"
+                  className="btn btn-sm btn-circle btn-ghost flex-shrink-0"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Status Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 auto-rows-fr">
-                  <div className="card bg-base-200 shadow-sm h-full flex">
-                    <div className="card-body p-4 text-center">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="card bg-base-200 shadow-sm">
+                    <div className="card-body p-3 sm:p-4 text-center">
                       <div
-                        className={`text-2xl font-bold ${
+                        className={`text-xl sm:text-2xl font-bold ${
                           viewingAsset.productQuantity === 0
                             ? "text-error"
                             : viewingAsset.productQuantity <= 5
@@ -812,11 +813,11 @@ const AssetList = () => {
                       >
                         {viewingAsset.productQuantity}
                       </div>
-                      <div className="text-sm text-base-content/70">
+                      <div className="text-xs sm:text-sm text-base-content/70">
                         Available Quantity
                       </div>
                       <div
-                        className={`badge badge-sm mt-1 ${
+                        className={`badge badge-xs sm:badge-sm mt-1 ${
                           viewingAsset.productQuantity === 0
                             ? "badge-error"
                             : viewingAsset.productQuantity <= 5
@@ -834,9 +835,9 @@ const AssetList = () => {
                   </div>
 
                   <div className="card bg-base-200 shadow-sm">
-                    <div className="card-body p-4 text-center">
+                    <div className="card-body p-3 sm:p-4 text-center">
                       <div
-                        className={`text-2xl font-bold ${
+                        className={`text-xl sm:text-2xl font-bold ${
                           viewingAsset.status === "Available"
                             ? "text-success"
                             : viewingAsset.status === "Assigned"
@@ -845,7 +846,7 @@ const AssetList = () => {
                         }`}
                       >
                         <svg
-                          className="w-8 h-8 mx-auto"
+                          className="w-6 h-6 sm:w-8 sm:h-8 mx-auto"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -867,9 +868,9 @@ const AssetList = () => {
                           )}
                         </svg>
                       </div>
-                      <div className="text-sm text-base-content/70">Status</div>
+                      <div className="text-xs sm:text-sm text-base-content/70">Status</div>
                       <div
-                        className={`badge badge-sm mt-1 ${
+                        className={`badge badge-xs sm:badge-sm mt-1 ${
                           viewingAsset.status === "Available"
                             ? "badge-success"
                             : viewingAsset.status === "Assigned"
@@ -883,24 +884,24 @@ const AssetList = () => {
                   </div>
 
                   <div className="card bg-base-200 shadow-sm">
-                    <div className="card-body p-4 text-center">
-                      <div className="text-2xl font-bold text-info">
+                    <div className="card-body p-3 sm:p-4 text-center">
+                      <div className="text-xl sm:text-2xl font-bold text-info">
                         {viewingAsset.requestCount || 0}
                       </div>
-                      <div className="text-sm text-base-content/70">
+                      <div className="text-xs sm:text-sm text-base-content/70">
                         Total Requests
                       </div>
-                      <div className="badge badge-info badge-sm mt-1">
+                      <div className="badge badge-info badge-xs sm:badge-sm mt-1">
                         {viewingAsset.requestCount > 0 ? "Popular" : "New"}
                       </div>
                     </div>
                   </div>
 
                   <div className="card bg-base-200 shadow-sm">
-                    <div className="card-body p-4 text-center">
-                      <div className="text-2xl font-bold text-neutral">
+                    <div className="card-body p-3 sm:p-4 text-center">
+                      <div className="text-xl sm:text-2xl font-bold text-neutral">
                         <svg
-                          className="w-8 h-8 mx-auto"
+                          className="w-6 h-6 sm:w-8 sm:h-8 mx-auto"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -913,8 +914,8 @@ const AssetList = () => {
                           />
                         </svg>
                       </div>
-                      <div className="text-sm text-base-content/70">Added</div>
-                      <div className="badge badge-neutral badge-sm mt-1">
+                      <div className="text-xs sm:text-sm text-base-content/70">Added</div>
+                      <div className="badge badge-neutral badge-xs sm:badge-sm mt-1">
                         {new Date(viewingAsset.createdAt).toLocaleDateString()}
                       </div>
                     </div>
@@ -922,13 +923,13 @@ const AssetList = () => {
                 </div>
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                   {/* Left Column - Asset Image */}
                   <div className="lg:col-span-1">
                     <div className="card bg-base-100 shadow-sm border border-base-300">
-                      <div className="card-body p-4">
-                        <h4 className="card-title text-lg mb-4">Asset Image</h4>
-                        <div className="aspect-square rounded-lg overflow-hidden bg-base-200 flex items-center justify-center">
+                      <div className="card-body p-3 sm:p-4">
+                        <h4 className="card-title text-base sm:text-lg mb-3 sm:mb-4">Asset Image</h4>
+                        <div className="aspect-square w-full max-w-sm mx-auto lg:max-w-full rounded-lg overflow-hidden bg-base-200 flex items-center justify-center">
                           <img
                             src={viewingAsset.productImage}
                             alt={viewingAsset.productName}
@@ -942,10 +943,10 @@ const AssetList = () => {
 
                         {/* Assignment Info */}
                         {viewingAsset.assignedTo && (
-                          <div className="mt-4 p-3 bg-warning/10 rounded-lg border border-warning/20">
+                          <div className="mt-3 sm:mt-4 p-3 bg-warning/10 rounded-lg border border-warning/20">
                             <div className="flex items-center gap-2 text-warning-content">
                               <svg
-                                className="w-4 h-4"
+                                className="w-4 h-4 flex-shrink-0"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -957,11 +958,11 @@ const AssetList = () => {
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                 />
                               </svg>
-                              <span className="font-medium">
+                              <span className="font-medium text-sm">
                                 Currently Assigned
                               </span>
                             </div>
-                            <div className="mt-2 text-sm">
+                            <div className="mt-2 text-xs sm:text-sm">
                               <div>
                                 <strong>Employee:</strong>{" "}
                                 {viewingAsset.assignedEmployeeName ||

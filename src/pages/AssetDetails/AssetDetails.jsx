@@ -23,16 +23,23 @@ const AssetDetails = () => {
   } = useQuery({
     queryKey: ["asset-details", id, role],
     queryFn: async () => {
-      // All users (admin, HR, employee) use the same endpoint
-      // The backend handles role-based filtering
-      const res = await axiosSecure.get("/assets");
-      
-      // Handle different response formats
-      const assets = role === 'admin' 
-        ? (res.data.assets || [])
-        : (Array.isArray(res.data) ? res.data : []);
-      
-      return assets.find(asset => asset._id === id);
+      try {
+        // Try to fetch the specific asset directly first
+        const res = await axiosSecure.get(`/assets/${id}`);
+        return res.data;
+      } catch (err) {
+        // Fallback: fetch all assets and find the one we need
+        console.log("Direct fetch failed, trying list approach", err);
+        const res = await axiosSecure.get("/assets");
+        
+        // Handle different response formats
+        const assets = role === 'admin' 
+          ? (res.data.assets || [])
+          : (Array.isArray(res.data) ? res.data : []);
+        
+        // Try to find by _id or assetId
+        return assets.find(asset => asset._id === id || asset.assetId === id);
+      }
     },
     enabled: !!id && !!user && !!role,
   });
@@ -43,18 +50,23 @@ const AssetDetails = () => {
     queryFn: async () => {
       if (!asset) return [];
       
-      let allAssets = [];
-      if (role === "admin") {
-        const res = await axiosSecure.get("/admin/assets");
-        allAssets = res.data.assets || res.data;
-      } else {
-        const res = await axiosSecure.get("/assets");
-        allAssets = res.data;
+      try {
+        let allAssets = [];
+        if (role === "admin") {
+          const res = await axiosSecure.get("/admin/assets");
+          allAssets = res.data.assets || res.data;
+        } else {
+          const res = await axiosSecure.get("/assets");
+          allAssets = Array.isArray(res.data) ? res.data : (res.data.assets || []);
+        }
+        
+        return allAssets
+          .filter(a => a.productType === asset.productType && a._id !== id && a._id !== asset._id)
+          .slice(0, 4);
+      } catch (err) {
+        console.log("Failed to fetch related assets", err);
+        return [];
       }
-      
-      return allAssets
-        .filter(a => a.productType === asset.productType && a._id !== id)
-        .slice(0, 4);
     },
     enabled: !!asset && !!role,
   });
@@ -135,9 +147,9 @@ const AssetDetails = () => {
         />
       </Helmet>
 
-      <div className="container-responsive py-8">
+      <div className="container-responsive py-4 sm:py-6 lg:py-8">
         {/* Breadcrumb */}
-        <div className="breadcrumbs text-sm mb-6">
+        <div className="breadcrumbs text-xs sm:text-sm mb-4 sm:mb-6">
           <ul>
             <li>
               <Link to="/" className="text-primary hover:text-primary-focus">
@@ -152,32 +164,37 @@ const AssetDetails = () => {
                 All Assets
               </Link>
             </li>
-            <li className="text-base-content/70">{asset.productName}</li>
+            <li className="text-base-content/70 truncate max-w-[150px] sm:max-w-none">{asset.productName}</li>
           </ul>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8 lg:mb-12">
           {/* Image Gallery */}
           <div className="space-y-4 h-full w-full flex justify-center items-center">
-            <div className="bg-base-100 rounded-xl shadow-sm p-4">
-              <img
-                src={asset.productImage}
-                alt={asset.productName}
-                className="w-full h-96 object-cover rounded-lg"
-              />
+            <div className="bg-base-100 rounded-xl shadow-sm p-3 sm:p-4 lg:p-6 w-full">
+              <div className="aspect-square w-full max-w-md mx-auto rounded-lg overflow-hidden bg-base-200">
+                <img
+                  src={asset.productImage}
+                  alt={asset.productName}
+                  className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    e.target.src = "https://via.placeholder.com/400x400?text=No+Image";
+                  }}
+                />
+              </div>
             </div>
           </div>
 
           {/* Asset Information */}
-          <div className="space-y-6">
-            <div className="bg-base-100 rounded-xl shadow-sm p-6">
-              <h1 className="text-3xl font-bold text-primary mb-4">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-base-100 rounded-xl shadow-sm p-4 sm:p-6">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-3 sm:mb-4">
                 {asset.productName}
               </h1>
 
-              <div className="flex flex-wrap gap-3 mb-6">
+              <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <span
-                  className={`badge badge-lg ${
+                  className={`badge badge-md sm:badge-lg ${
                     asset.productType === "Returnable"
                       ? "badge-success"
                       : "badge-info"
@@ -186,7 +203,7 @@ const AssetDetails = () => {
                   {asset.productType}
                 </span>
                 <span
-                  className={`badge badge-lg ${
+                  className={`badge badge-md sm:badge-lg ${
                     asset.productQuantity > 0 ? "badge-info" : "badge-error"
                   }`}
                 >
@@ -196,18 +213,18 @@ const AssetDetails = () => {
                 </span>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center py-2 border-b border-base-300">
+              <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+                <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                   <span className="font-medium">Asset Code:</span>
-                  <span className="font-mono text-sm">
+                  <span className="font-mono text-xs sm:text-sm truncate max-w-[150px] sm:max-w-none">
                     {asset.assetCode || asset._id}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-base-300">
+                <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                   <span className="font-medium">Asset Type:</span>
                   <span>{asset.productType}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-base-300">
+                <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                   <span className="font-medium">Availability:</span>
                   <span
                     className={
@@ -217,35 +234,35 @@ const AssetDetails = () => {
                     {asset.productQuantity > 0 ? "In Stock" : "Out of Stock"}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-base-300">
+                <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                   <span className="font-medium">Quantity:</span>
                   <span className="font-semibold">{asset.productQuantity}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-base-300">
+                <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                   <span className="font-medium">Date Added:</span>
                   <span>{new Date(asset.createdAt).toLocaleDateString()}</span>
                 </div>
                 {(role === "admin" || role === "hr") && (
                   <>
-                    <div className="flex justify-between items-center py-2 border-b border-base-300">
+                    <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                       <span className="font-medium">Company:</span>
-                      <span>{asset.companyName || "N/A"}</span>
+                      <span className="truncate max-w-[150px] sm:max-w-none">{asset.companyName || "N/A"}</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-base-300">
+                    <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                       <span className="font-medium">HR:</span>
-                      <span>{asset.hrEmail || "N/A"}</span>
+                      <span className="truncate max-w-[150px] sm:max-w-none">{asset.hrEmail || "N/A"}</span>
                     </div>
                   </>
                 )}
                 {asset.assignedTo && (
                   <>
-                    <div className="flex justify-between items-center py-2 border-b border-base-300">
+                    <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                       <span className="font-medium">Assigned To:</span>
-                      <span>
+                      <span className="truncate max-w-[150px] sm:max-w-none">
                         {asset.assignedEmployeeName || asset.assignedTo}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-base-300">
+                    <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                       <span className="font-medium">Assigned Date:</span>
                       <span>
                         {asset.assignedDate
@@ -254,7 +271,7 @@ const AssetDetails = () => {
                       </span>
                     </div>
                     {asset.expectedReturnDate && (
-                      <div className="flex justify-between items-center py-2 border-b border-base-300">
+                      <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                         <span className="font-medium">Expected Return:</span>
                         <span>
                           {new Date(
@@ -265,23 +282,23 @@ const AssetDetails = () => {
                     )}
                   </>
                 )}
-                <div className="flex justify-between items-center py-2 border-b border-base-300">
+                <div className="flex justify-between items-center py-2 border-b border-base-300 text-sm sm:text-base">
                   <span className="font-medium">Request Count:</span>
                   <span>{asset.requestCount || 0}</span>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {role === "employee" && (
                   <button
                     onClick={handleRequestAsset}
                     disabled={asset.productQuantity === 0}
-                    className="btn btn-primary w-full btn-lg"
+                    className="btn btn-primary w-full btn-sm sm:btn-md lg:btn-lg"
                   >
                     {asset.productQuantity === 0 ? (
                       <>
                         <svg
-                          className="w-5 h-5"
+                          className="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -298,7 +315,7 @@ const AssetDetails = () => {
                     ) : (
                       <>
                         <svg
-                          className="w-5 h-5"
+                          className="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -317,9 +334,9 @@ const AssetDetails = () => {
                 )}
 
                 {role === "hr" && (
-                  <div className="alert alert-info">
+                  <div className="alert alert-info text-xs sm:text-sm">
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -338,9 +355,9 @@ const AssetDetails = () => {
                 )}
 
                 {role === "admin" && (
-                  <div className="alert alert-success">
+                  <div className="alert alert-success text-xs sm:text-sm">
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -358,10 +375,10 @@ const AssetDetails = () => {
 
                 <Link
                   to="/assets"
-                  className="btn btn-outline btn-primary w-full"
+                  className="btn btn-outline btn-primary w-full btn-sm sm:btn-md"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -381,10 +398,10 @@ const AssetDetails = () => {
         </div>
 
         {/* Asset Description */}
-        <div className="bg-base-100 rounded-xl shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-4">Description</h2>
+        <div className="bg-base-100 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-primary mb-3 sm:mb-4">Description</h2>
           <div className="prose max-w-none">
-            <p className="text-base-content/80 leading-relaxed">
+            <p className="text-sm sm:text-base text-base-content/80 leading-relaxed">
               {asset.description ||
                 `The ${
                   asset.productName
@@ -396,23 +413,23 @@ const AssetDetails = () => {
         </div>
 
         {/* Asset Specifications */}
-        <div className="bg-base-100 rounded-xl shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-4">
+        <div className="bg-base-100 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-primary mb-3 sm:mb-4">
             Asset Specifications
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="space-y-3">
-              <h3 className="font-semibold text-lg text-secondary">
+              <h3 className="font-semibold text-base sm:text-lg text-secondary">
                 Basic Information
               </h3>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs sm:text-sm">
                 <div className="flex justify-between">
                   <span className="text-base-content/70">Asset ID:</span>
-                  <span className="font-mono">{asset._id}</span>
+                  <span className="font-mono truncate max-w-[120px] sm:max-w-none">{asset._id}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-base-content/70">Asset Code:</span>
-                  <span className="font-mono">{asset.assetCode || "N/A"}</span>
+                  <span className="font-mono truncate max-w-[120px] sm:max-w-none">{asset.assetCode || "N/A"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-base-content/70">Category:</span>
@@ -435,10 +452,10 @@ const AssetDetails = () => {
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-lg text-secondary">
+              <h3 className="font-semibold text-base sm:text-lg text-secondary">
                 Availability
               </h3>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs sm:text-sm">
                 <div className="flex justify-between">
                   <span className="text-base-content/70">Total Quantity:</span>
                   <span className="font-semibold">{asset.productQuantity}</span>
@@ -462,17 +479,17 @@ const AssetDetails = () => {
 
             {(role === "admin" || role === "hr") && (
               <div className="space-y-3">
-                <h3 className="font-semibold text-lg text-secondary">
+                <h3 className="font-semibold text-base sm:text-lg text-secondary">
                   Organization
                 </h3>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex justify-between">
                     <span className="text-base-content/70">Company:</span>
-                    <span>{asset.companyName || "N/A"}</span>
+                    <span className="truncate max-w-[120px] sm:max-w-none">{asset.companyName || "N/A"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-base-content/70">HR:</span>
-                    <span>{asset.hrEmail || "N/A"}</span>
+                    <span className="truncate max-w-[120px] sm:max-w-none">{asset.hrEmail || "N/A"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-base-content/70">Date Added:</span>
@@ -488,23 +505,23 @@ const AssetDetails = () => {
 
         {/* Assignment Information (if assigned) */}
         {asset.assignedTo && (
-          <div className="bg-base-100 rounded-xl shadow-sm p-6 mb-8">
-            <h2 className="text-2xl font-bold text-primary mb-4">
+          <div className="bg-base-100 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-primary mb-3 sm:mb-4">
               Current Assignment
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-3">
-                <h3 className="font-semibold text-lg text-secondary">
+                <h3 className="font-semibold text-base sm:text-lg text-secondary">
                   Assigned Employee
                 </h3>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex justify-between">
                     <span className="text-base-content/70">Employee:</span>
-                    <span>{asset.assignedEmployeeName || "N/A"}</span>
+                    <span className="truncate max-w-[150px] sm:max-w-none">{asset.assignedEmployeeName || "N/A"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-base-content/70">Email:</span>
-                    <span>{asset.assignedTo}</span>
+                    <span className="truncate max-w-[150px] sm:max-w-none">{asset.assignedTo}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-base-content/70">Assigned Date:</span>
@@ -519,10 +536,10 @@ const AssetDetails = () => {
 
               {asset.productType === "Returnable" && (
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-lg text-secondary">
+                  <h3 className="font-semibold text-base sm:text-lg text-secondary">
                     Return Information
                   </h3>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2 text-xs sm:text-sm">
                     <div className="flex justify-between">
                       <span className="text-base-content/70">
                         Expected Return:
@@ -549,14 +566,14 @@ const AssetDetails = () => {
         )}
 
         {/* Key Information */}
-        <div className="bg-base-100 rounded-xl shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-4">
+        <div className="bg-base-100 rounded-xl shadow-sm p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-primary mb-3 sm:mb-4">
             Key Information
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <h3 className="font-semibold text-lg mb-3">Asset Details</h3>
-              <ul className="space-y-2 text-base-content/80">
+              <h3 className="font-semibold text-base sm:text-lg mb-3">Asset Details</h3>
+              <ul className="space-y-2 text-xs sm:text-sm text-base-content/80">
                 <li>• Asset Name: {asset.productName}</li>
                 <li>• Type: {asset.productType}</li>
                 <li>• Current Stock: {asset.productQuantity} units</li>
@@ -567,14 +584,14 @@ const AssetDetails = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-lg mb-3">
+              <h3 className="font-semibold text-base sm:text-lg mb-3">
                 {role === "employee"
                   ? "Request Information"
                   : role === "hr"
                     ? "Management Options"
                     : "Admin Information"}
               </h3>
-              <ul className="space-y-2 text-base-content/80">
+              <ul className="space-y-2 text-xs sm:text-sm text-base-content/80">
                 {role === "employee" && (
                   <>
                     <li>• Login required to request</li>
@@ -611,34 +628,36 @@ const AssetDetails = () => {
 
         {/* Related Assets */}
         {relatedAssets.length > 0 && (
-          <div className="bg-base-100 rounded-xl shadow-sm p-6">
-            <h2 className="text-2xl font-bold text-primary mb-6">
+          <div className="bg-base-100 rounded-xl shadow-sm p-4 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-primary mb-4 sm:mb-6">
               Related Assets
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {relatedAssets.map((relatedAsset) => (
                 <Link
                   key={relatedAsset._id}
                   to={`/asset/${relatedAsset._id}`}
-                  className="card bg-base-200 hover:bg-base-300 transition-colors duration-200"
+                  className="card bg-base-200 hover:bg-base-300 hover:shadow-lg transition-all duration-200 hover:scale-105"
                 >
-                  <figure className="px-4 pt-4">
-                    <img
-                      src={relatedAsset.productImage}
-                      alt={relatedAsset.productName}
-                      className="rounded-lg h-32 w-full object-cover"
-                      onError={(e) => {
-                        e.target.src =
-                          "https://via.placeholder.com/200x150?text=No+Image";
-                      }}
-                    />
+                  <figure className="px-3 pt-3 sm:px-4 sm:pt-4">
+                    <div className="w-full aspect-video rounded-lg overflow-hidden bg-base-300">
+                      <img
+                        src={relatedAsset.productImage}
+                        alt={relatedAsset.productName}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://via.placeholder.com/200x150?text=No+Image";
+                        }}
+                      />
+                    </div>
                   </figure>
-                  <div className="card-body p-4">
-                    <h3 className="card-title text-sm line-clamp-2">
+                  <div className="card-body p-3 sm:p-4">
+                    <h3 className="card-title text-xs sm:text-sm line-clamp-2">
                       {relatedAsset.productName}
                     </h3>
                     <span
-                      className={`badge badge-sm ${
+                      className={`badge badge-xs sm:badge-sm ${
                         relatedAsset.productQuantity > 0
                           ? "badge-success"
                           : "badge-error"

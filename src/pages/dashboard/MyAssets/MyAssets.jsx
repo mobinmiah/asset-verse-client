@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Loading } from "../../../components/LoadingStates/LoadingStates";
 import ResponsiveTable from "../../../components/ResponsiveTable/ResponsiveTable";
@@ -178,17 +179,28 @@ const MyAssets = () => {
       header: "Action",
       accessor: "action",
       render: (item) => (
-        <div>
+        <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+          <Link
+            to={`/asset/${item._id || item.assetId}`}
+            className="btn btn-xs sm:btn-sm btn-info"
+            title="View Asset Details"
+          >
+            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span className="hidden sm:inline">View</span>
+          </Link>
           {item.productType === "Returnable" && item.status === "approved" ? (
             <button 
-              className="btn btn-xs btn-primary"
+              className="btn btn-xs sm:btn-sm btn-primary"
               onClick={() => handleReturnAsset(item)}
               disabled={returnAsset.isLoading}
             >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
               </svg>
-              {returnAsset.isLoading ? "Returning..." : "Return"}
+              <span className="hidden sm:inline">{returnAsset.isLoading ? "Returning..." : "Return"}</span>
             </button>
           ) : (
             <span className="text-xs text-base-content/50">Not Returnable</span>

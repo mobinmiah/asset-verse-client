@@ -12,7 +12,6 @@
 - **HR Dashboard**: View and manage company assets and employees.
 - **Asset Management**:
   - Add, edit, and delete assets
-  - Upload product images via ImgBB
   - Track asset type, quantity, and company affiliation
 - **Employee Management**:
   - View employees with photo, name, email, join date, and assets count
@@ -51,13 +50,22 @@ _HR Dashboard - Human Resources asset management interface_
 ![Employee Dashboard](ss/employee-dashbard.png)
 _Employee Dashboard - Personal asset view and request management_
 
-### Asset Views
+![All Assets](ss/assets.png)
+_All The Assets Showing_
 
-![Asset Mobile View](ss/asset-mobile-view.png)
-_Mobile-responsive asset listing view_
+![Asset Details](ss/asset-details.png)
+_Asset Details_
 
-![Asset Tablet View](ss/asset-tab-view.png)
-_Tablet-optimized asset management interface_
+### Responsiveness
 
-![Asset Detail View](ss/asset3.png)
-_Detailed asset information and management screen_
+![Mobile View On Pxel](ss/mobile-view-pixel.png)
+_Mobile-responsive_
+
+![Mobile View On Iphone](ss/mobile-view-iphone)
+_Mobile-responsive_
+
+![Tablet View On Samsung Galaxy Tab](ss/tablet-veiw-galaxy.png)
+_Tablet-responsive_
+
+![Tablet View On Ipad](ss/tablet-view-ipad.png)
+_Tablet-responsive_
