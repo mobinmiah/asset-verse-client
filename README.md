@@ -41,13 +41,13 @@
 
 ### Dashboards
 
-![Admin Dashboard](ss/admin-dashboard.png)
+![Admin Dashboard](ss/adminDashboard.png)
 _Admin Dashboard - Overview of all company assets and management controls_
 
-![HR Dashboard](ss/hr-dashboard.png)
+![HR Dashboard](ss/hrDashboard.png)
 _HR Dashboard - Human Resources asset management interface_
 
-![Employee Dashboard](ss/employee-dashbard.png)
+![Employee Dashboard](ss/employeeDashbard.png)
 _Employee Dashboard - Personal asset view and request management_
 
 ![All Assets](ss/assets.png)
