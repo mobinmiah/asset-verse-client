@@ -51,7 +51,7 @@ _HR Dashboard - Human Resources asset management interface_
 _Employee Dashboard - Personal asset view and request management_
 
 ![All Assets](ss/assets.png)
-_All The Assets Showing_
+_All Assets With Search Functionality_
 
 ![Asset Details](ss/asset-details.png)
 _Asset Details_
@@ -59,13 +59,13 @@ _Asset Details_
 ### Responsiveness
 
 ![Mobile View On Pxel](ss/mobile-view-pixel.png)
-_Mobile-responsive_
+_Mobile View On Pxel_
 
-![Mobile View On Iphone](ss/mobile-view-iphone)
-_Mobile-responsive_
+![Mobile View On Iphone](ss/mobile-view-iphone.png)
+_Mobile View On Iphone_
 
 ![Tablet View On Samsung Galaxy Tab](ss/tablet-veiw-galaxy.png)
-_Tablet-responsive_
+_Tablet View On Samsung Galaxy Tab_
 
 ![Tablet View On Ipad](ss/tablet-view-ipad.png)
-_Tablet-responsive_
+_Tablet View On Ipad_
